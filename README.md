@@ -7,6 +7,7 @@ An image-based search e-commerce application.
 - [Overview](#overview)
 - [Features](#feature)
 - [Branching Strategy](#branching-strategy)
+- [Bug Fixes](#bug-fixes)
 - [Contact Information](#contact-information)
 
 ## Introduction
@@ -55,6 +56,15 @@ Snapp Shopper is an innovative e-commerce platform designed to enhance the onlin
 
 ## Branching Strategy
 Snapp Shopper follows a structured branching strategy to manage code development and releases effectively. We have the following branches:
-- Development Branch: The @development branch is where active development takes place. This is where new features, bug fixes, and hotfixes are initially developed.
-- Main Branch: The @main branch represents the current working release of the application. This branch is the most stable and reliable version of the project.
-- Staging Branch: The @staging branch is used for User Acceptance Testing (UAT). It represents the version of the application available for testing and validation before it's released to the main branch.
+- Development Branch: The development branch is where active development takes place. This is where new features, bug fixes, and hotfixes are initially developed.
+- Main Branch: The main branch represents the current working release of the application. This branch is the most stable and reliable version of the project.
+- Staging Branch: The staging branch is used for User Acceptance Testing (UAT). It represents the version of the application available for testing and validation before it's released to the main branch.
+
+## Feature, Bug, and Hotfix Branches
+In addition to the main branches, we create feature, bug, and hotfix branches for code development and issue resolution:
+- Feature Branches: These branches are created from the development branch and are used for the development of new features or enhancements. Feature branches are merged back into the development branch once the feature is complete.
+- Bug Branches: Bug branches are created from the development branch and are dedicated to addressing specific issues or bugs. Once the bug is fixed, the changes are merged back into the development branch.
+- Hotfix Branches: Hotfix branches are created from the main branch and are used for addressing critical issues or bugs in the live version of the application. Once the hotfix is tested and validated, it's merged into both the development and main branches.
+
+## Contact
+If you have any questions or need further information, please raise an issue with the label of \help
