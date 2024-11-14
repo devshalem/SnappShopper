@@ -27,6 +27,34 @@ Snapp Shopper is an innovative e-commerce platform designed to enhance the onlin
 - Purpose: Allows users to make informed purchasing decisions with access to comprehensive product data.
 ### 4. Shopping Cart and Checkout
 - Features
-- - Add or remove items from the cart, adjust quantities, and view total costs (including estimated shipping and tax).
+  - Add or remove items from the cart, adjust quantities, and view total costs (including estimated shipping and tax).
   - Access to multiple payment options and secure payment gateways (e.g., Flutterwave).
   - A streamlined checkout process that integrates seamlessly with the user’s profile and payment preferences. 
+### 5. Order Management and Tracking
+- Order Management: Users can view their order history, track order status, and receive real-time updates on order progression.
+- Delivery Tracking: Using logistics APIs (such as DHL Express), users are notified of delivery statuses and can view their package’s location on a map.
+### 6. Profile and Account Management
+- Overview: Enables users to manage personal details, including saved addresses, payment methods, and account settings.
+- Security: Supports two-factor authentication for account security and user data protection.
+### 7. Product Recommendations and Personalized Suggestions
+- Overview: The app’s recommendation system provides users with personalized product suggestions based on their browsing history and previous searches.
+- Benefit: Enhances the shopping experience by displaying products aligned with the user’s preferences and interests.
+## 8. Customer Support and Help Desk
+- Overview: Users can reach out to customer support for inquiries about orders, product information, and account assistance.
+- Self-Help Resources: FAQs, troubleshooting, and order management guides.
+## 3. Technology Stack
+- Frontend: HTML, CSS/SCSS, JavaScript, and jQuery for web; React Native for mobile.
+- Backend: PHP API for server-side processing and secure interactions with the database.
+- Database: MySQL, for efficient data storage of products, user profiles, and order details.
+- Third-Party Integrations:
+  - Google Vision API: For image recognition.
+  - E-commerce APIs: Alibaba, eBay, Amazon for product search and matching.
+  - Payment Gateway: Flutterwave for secure transaction handling.
+  - Logistics API: DHL Express for tracking and delivery status updates.
+- AI and Machine Learning: OpenAI’s ChatGPT for enhanced search support and user assistance.
+
+## Branching Strategy
+Snapp Shopper follows a structured branching strategy to manage code development and releases effectively. We have the following branches:
+- Development Branch: The development branch is where active development takes place. This is where new features, bug fixes, and hotfixes are initially developed.
+- Main Branch: The main branch represents the current working release of the application. This branch is the most stable and reliable version of the project.
+- Staging Branch: The staging branch is used for User Acceptance Testing (UAT). It represents the version of the application available for testing and validation before it's released to the main branch.
