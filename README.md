@@ -16,4 +16,5 @@ This project is designed to target users who prioritize convenience and are keen
 Snapp Shopper is an innovative e-commerce platform designed to enhance the online shopping experience by incorporating advanced image recognition capabilities. Users can upload images of desired products, which the app then analyzes and matches against a broad array of items available across various online marketplaces. Through integrations with Google Vision API and major e-commerce platforms such as Alibaba, eBay, and Amazon, Snapp Shopper allows users to seamlessly discover and purchase products by searching with images instead of text.
 
 ## Features
-   
+### 1. Image-Based Product Search
+- Overview: Users can search for products by uploading images, eliminating the need to type specific product names or categories.
