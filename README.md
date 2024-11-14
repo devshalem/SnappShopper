@@ -55,6 +55,6 @@ Snapp Shopper is an innovative e-commerce platform designed to enhance the onlin
 
 ## Branching Strategy
 Snapp Shopper follows a structured branching strategy to manage code development and releases effectively. We have the following branches:
-- Development Branch: The development branch is where active development takes place. This is where new features, bug fixes, and hotfixes are initially developed.
-- Main Branch: The main branch represents the current working release of the application. This branch is the most stable and reliable version of the project.
-- Staging Branch: The staging branch is used for User Acceptance Testing (UAT). It represents the version of the application available for testing and validation before it's released to the main branch.
+- Development Branch: The @development branch is where active development takes place. This is where new features, bug fixes, and hotfixes are initially developed.
+- Main Branch: The @main branch represents the current working release of the application. This branch is the most stable and reliable version of the project.
+- Staging Branch: The @staging branch is used for User Acceptance Testing (UAT). It represents the version of the application available for testing and validation before it's released to the main branch.
