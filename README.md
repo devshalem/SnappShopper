@@ -7,8 +7,7 @@ An image-based search e-commerce application.
 - [Overview](#overview)
 - [Features](#feature)
 - [Branching Strategy](#branching-strategy)
-- [Bug Fixes](#bug-fixes)
-- [Contact Information](#contact-information)
+- [Contact Information](#contact)
 
 ## Introduction
 This project is designed to target users who prioritize convenience and are keen on discovering products visually. It also aims to streamline the shopping journey by offering secure payment gateways, detailed tracking, and user-friendly interfaces for both web and mobile users
@@ -67,4 +66,4 @@ In addition to the main branches, we create feature, bug, and hotfix branches fo
 - Hotfix Branches: Hotfix branches are created from the main branch and are used for addressing critical issues or bugs in the live version of the application. Once the hotfix is tested and validated, it's merged into both the development and main branches.
 
 ## Contact
-If you have any questions or need further information, please raise an issue with the label of \help
+If you have any questions or need further information, please raise an issue with the label of help
