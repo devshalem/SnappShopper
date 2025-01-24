@@ -1,0 +1,256 @@
+## API Documentation for CartItem Class
+
+### Overview
+The `CartItem` class represents an item in the user's cart. It includes methods for adding, updating, and retrieving cart items, as well as calculating the total price for each item.
+
+---
+
+### **Add Product to Cart**
+
+#### Endpoint:
+- **Method**: `POST`
+- **Path**: `/cart/item/add`
+
+#### Description:
+Adds a product to the user's cart. If the product is already in the cart, it updates the quantity.
+
+#### Request Parameters:
+- `cart_id` (int) - The ID of the user's cart.
+- `product_id` (int) - The ID of the product to be added to the cart.
+- `quantity` (int) - The quantity of the product to be added to the cart.
+- `price_at_addition` (float) - The price of the product when it was added to the cart.
+
+#### Example Request:
+```json
+{
+  "cart_id": 1,
+  "product_id": 123,
+  "quantity": 2,
+  "price_at_addition": 19.99
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "message": "Product added to cart"
+    }
+    ```
+
+- **Error**:
+    - Status: `400 Bad Request`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Failed to add product to cart"
+    }
+    ```
+
+---
+
+### **Update Product Quantity in Cart**
+
+#### Endpoint:
+- **Method**: `PUT`
+- **Path**: `/cart/item/update/{cart_id}/{product_id}`
+
+#### Description:
+Updates the quantity of a specific product in the user's cart.
+
+#### Request Parameters:
+- `cart_id` (int) - The ID of the user's cart.
+- `product_id` (int) - The ID of the product whose quantity is to be updated.
+- `quantity` (int) - The new quantity of the product.
+
+#### Example Request:
+```json
+{
+  "quantity": 3
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "message": "Quantity updated"
+    }
+    ```
+
+- **Error**:
+    - Status: `400 Bad Request`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Failed to update quantity"
+    }
+    ```
+
+---
+
+### **Get Total Price for Cart Item**
+
+#### Endpoint:
+- **Method**: `GET`
+- **Path**: `/cart/item/total/{cart_id}/{product_id}`
+
+#### Description:
+Calculates the total price for a specific cart item based on its quantity and price at the time it was added.
+
+#### Request Parameters:
+- `cart_id` (int) - The ID of the user's cart.
+- `product_id` (int) - The ID of the product whose total price is to be calculated.
+
+#### Example Request:
+```json
+{
+  "cart_id": 1,
+  "product_id": 123
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "total_price": 39.98
+    }
+    ```
+
+- **Error**:
+    - Status: `404 Not Found`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Product not found in cart"
+    }
+    ```
+
+---
+
+### **Find Specific Item in Cart**
+
+#### Endpoint:
+- **Method**: `GET`
+- **Path**: `/cart/item/{cart_id}/{product_id}`
+
+#### Description:
+Finds a specific item in the cart by `cart_id` and `product_id`.
+
+#### Request Parameters:
+- `cart_id` (int) - The ID of the user's cart.
+- `product_id` (int) - The ID of the product to be searched for.
+
+#### Example Request:
+```json
+{
+  "cart_id": 1,
+  "product_id": 123
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "item": {
+        "cart_item_id": 456,
+        "cart_id": 1,
+        "product_id": 123,
+        "quantity": 2,
+        "price_at_addition": 19.99,
+        "added_date": "2025-01-24"
+      }
+    }
+    ```
+
+- **Error**:
+    - Status: `404 Not Found`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Product not found in cart"
+    }
+    ```
+
+---
+
+### **Find All Items in Cart**
+
+#### Endpoint:
+- **Method**: `GET`
+- **Path**: `/cart/items/{cart_id}`
+
+#### Description:
+Retrieves all items in the user's cart by `cart_id`.
+
+#### Request Parameters:
+- `cart_id` (int) - The ID of the user's cart.
+
+#### Example Request:
+```json
+{
+  "cart_id": 1
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "items": [
+        {
+          "cart_item_id": 456,
+          "cart_id": 1,
+          "product_id": 123,
+          "quantity": 2,
+          "price_at_addition": 19.99,
+          "added_date": "2025-01-24"
+        },
+        {
+          "cart_item_id": 457,
+          "cart_id": 1,
+          "product_id": 124,
+          "quantity": 1,
+          "price_at_addition": 9.99,
+          "added_date": "2025-01-24"
+        }
+      ]
+    }
+    ```
+
+- **Error**:
+    - Status: `404 Not Found`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "No items found in cart"
+    }
+    ```
+
+---
+
+### Notes:
+- **Cart Structure**: Each `CartItem` is linked to a specific `cart_id` and `product_id`. The price at the time of addition is stored to prevent price changes from affecting cart totals.
+- **Product ID Validation**: The `product_id` must be valid and exist in the database for the item to be added or updated in the cart.

@@ -37,15 +37,6 @@ class DatabaseObject
         return static::findBySql($sql);
     }
 
-    // Find a record by ID
-    public static function findById(int $id): object|false
-    {
-        $sql = "SELECT * FROM " . static::$table_name . " WHERE id = :id LIMIT 1";
-        $stmt = self::executeQuery($sql, ['id' => $id]);
-        $record = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $record ? static::instantiate($record) : false;
-    }
-
     // Count all records
     public static function countAll(): int
     {
@@ -55,10 +46,10 @@ class DatabaseObject
         return (int)($result['count'] ?? 0);
     }
 
-    // Save the current record (create or update)
+    // Save the current record (create)
     public function save(): bool
     {
-        return isset($this->id) && !empty($this->id) ? $this->update() : $this->create();
+        return $this->create();
     }
 
     // Create a new record
@@ -79,28 +70,6 @@ class DatabaseObject
         }
         return false;
     }
-
-
-
-    // Update an existing record
-    protected function update(): bool
-    {
-        $attributes = $this->sanitizedAttributes();
-        $attribute_pairs = [];
-        foreach ($attributes as $key => $value) {
-            $attribute_pairs[] = "$key = :$key";
-        }
-    
-        $sql = "UPDATE " . static::$table_name . " SET " . implode(', ', $attribute_pairs);
-        $sql .= " WHERE id = :id";
-    
-        $attributes['id'] = $this->id;
-    
-        $stmt = self::executeQuery($sql, $attributes);
-    
-        return $stmt !== false;
-    }
-    
 
     // Delete a record by ID
     public static function delete(int $id): bool

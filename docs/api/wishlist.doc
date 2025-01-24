@@ -1,0 +1,244 @@
+Here is the API documentation for the `Wishlist` class in your PHP application:
+
+---
+
+## Wishlist API Documentation
+
+### Overview
+
+The `Wishlist` class provides functionality for managing a user's wishlist. It allows users to add or remove products from their wishlist, check if a product is already in the wishlist, and retrieve all items in a user's wishlist. The class also includes validation methods to ensure the correct data is provided.
+
+---
+
+### Endpoints
+
+#### 1. **POST /api/wishlist/add**
+- **Description**: Add a product to the wishlist.
+- **Method**: `POST`
+- **Request Body** (JSON):
+
+```json
+{
+  "user_id": "required",
+  "product_id": "required"
+}
+```
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    {
+      "status": "success",
+      "message": "Product added to wishlist"
+    }
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "Validation failed",
+      "errors": [
+        "User ID is required.",
+        "Product ID is required."
+      ]
+    }
+    ```
+
+- **Notes**:
+  - The `user_id` and `product_id` are required to add the product to the wishlist.
+  - Validation errors will be returned in the `errors` array.
+
+---
+
+#### 2. **DELETE /api/wishlist/remove**
+- **Description**: Remove a product from the wishlist.
+- **Method**: `DELETE`
+- **Request Body** (JSON):
+
+```json
+{
+  "user_id": "required",
+  "product_id": "required"
+}
+```
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    {
+      "status": "success",
+      "message": "Product removed from wishlist"
+    }
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "Failed to remove product from wishlist"
+    }
+    ```
+
+- **Notes**:
+  - The `user_id` and `product_id` are required to remove the product from the wishlist.
+
+---
+
+#### 3. **GET /api/wishlist/{user_id}**
+- **Description**: Retrieve all products in a user's wishlist.
+- **Method**: `GET`
+- **URL Parameters**:
+  - `user_id`: The ID of the user.
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    [
+      {
+        "wishlist_id": 1,
+        "user_id": 1,
+        "product_id": 101,
+        "added_date": "2025-01-24T12:00:00Z"
+      },
+      {
+        "wishlist_id": 2,
+        "user_id": 1,
+        "product_id": 102,
+        "added_date": "2025-01-24T12:00:00Z"
+      }
+    ]
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "No wishlist items found"
+    }
+    ```
+
+- **Notes**:
+  - Returns a list of all products added to the wishlist for the given `user_id`.
+
+---
+
+#### 4. **GET /api/wishlist/check**
+- **Description**: Check if a product is already in the wishlist.
+- **Method**: `GET`
+- **URL Parameters**:
+  - `user_id`: The ID of the user.
+  - `product_id`: The ID of the product.
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    {
+      "status": "success",
+      "message": "Product is in the wishlist"
+    }
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "Product is not in the wishlist"
+    }
+    ```
+
+- **Notes**:
+  - Checks if the specified `product_id` is already in the wishlist of the user identified by `user_id`.
+
+---
+
+### Class Methods
+
+#### `addToWishlist()`
+- **Description**: Adds a product to the wishlist.
+- **Returns**:
+  - **On success**:
+    ```json
+    {
+      "status": "success",
+      "message": "Product added to wishlist"
+    }
+    ```
+  - **On failure**:
+    ```json
+    {
+      "status": "error",
+      "message": "Validation failed",
+      "errors": ["error_message"]
+    }
+    ```
+
+#### `removeFromWishlist()`
+- **Description**: Removes a product from the wishlist.
+- **Returns**:
+  - **On success**:
+    ```json
+    {
+      "status": "success",
+      "message": "Product removed from wishlist"
+    }
+    ```
+  - **On failure**:
+    ```json
+    {
+      "status": "error",
+      "message": "Failed to remove product from wishlist"
+    }
+    ```
+
+#### `isProductInWishlist($user_id, $product_id)`
+- **Description**: Checks if a product is already in the wishlist for a given user.
+- **Parameters**:
+  - `user_id`: The ID of the user.
+  - `product_id`: The ID of the product.
+- **Returns**: `true` if the product is in the wishlist, otherwise `false`.
+
+#### `findWishlistByUserId($user_id)`
+- **Description**: Retrieves all wishlist items for a user.
+- **Parameters**:
+  - `user_id`: The ID of the user.
+- **Returns**: An array of `Wishlist` objects representing all wishlist items for the user.
+
+#### `validate()`
+- **Description**: Validates the wishlist item.
+- **Returns**: An array of validation errors. If validation is successful, the array will be empty.
+
+#### `getUserDetails()`
+- **Description**: Retrieves the user details for the user who added the product to the wishlist.
+- **Returns**: A `Users` object containing the user information.
+
+#### `getProductDetails()`
+- **Description**: Retrieves the product details for the product in the wishlist.
+- **Returns**: A `Products` object containing the product information.
+
+---
+
+### Error Codes
+
+| Error Code | Description                                                |
+|------------|------------------------------------------------------------|
+| `400`      | Bad request (typically due to missing or invalid data).    |
+| `404`      | Not found (e.g., no wishlist item found for the given user).|
+| `500`      | Internal server error (e.g., database connection issue).    |
+
+---
+
+### Validation Errors
+- `"User ID is required."` – The `user_id` is required when adding or removing a product from the wishlist.
+- `"Product ID is required."` – The `product_id` is required when adding or removing a product from the wishlist.
+
+---
+
+### Notes
+- **Wishlist Item**: Each item in the wishlist is associated with a `user_id` and a `product_id`.
+- **User ID**: The `user_id` corresponds to the user who added the product to their wishlist.
+- **Product ID**: The `product_id` corresponds to the product that was added to the wishlist.

@@ -1,0 +1,243 @@
+## API Documentation for Inventory Class
+
+### Overview
+The `Inventory` class manages the inventory of products in an e-commerce system. It provides methods for adding new inventory, adjusting the available quantity, tracking the quantity sold, and validating inventory data.
+
+---
+
+### **Add or Update Inventory**
+
+#### Endpoint:
+- **Method**: `POST`
+- **Path**: `/inventory/save`
+
+#### Description:
+Adds new inventory or updates the existing inventory for a product.
+
+#### Request Parameters:
+- `product_id` (int) - The ID of the product in the inventory.
+- `quantity_available` (int) - The quantity of the product available in stock.
+- `quantity_sold` (int) - The quantity of the product that has been sold.
+- `last_updated` (string) - The timestamp of when the inventory was last updated.
+
+#### Example Request:
+```json
+{
+  "product_id": 123,
+  "quantity_available": 50,
+  "quantity_sold": 10,
+  "last_updated": "2025-01-24 12:00:00"
+}
+```
+
+#### Response:
+- **Success**: 
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "message": "Inventory saved successfully"
+    }
+    ```
+
+- **Error**: 
+    - Status: `400 Bad Request`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Validation failed",
+      "errors": [
+        "Invalid product ID.",
+        "Quantity available must be a non-negative number."
+      ]
+    }
+    ```
+
+---
+
+### **Get Inventory for a Product**
+
+#### Endpoint:
+- **Method**: `GET`
+- **Path**: `/inventory/product/{product_id}`
+
+#### Description:
+Retrieves the inventory details for a specific product by its ID.
+
+#### Request Parameters:
+- `product_id` (int) - The ID of the product.
+
+#### Example Request:
+```json
+{
+  "product_id": 123
+}
+```
+
+#### Response:
+- **Success**: 
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "inventory": {
+        "inventory_id": 1,
+        "product_id": 123,
+        "quantity_available": 50,
+        "quantity_sold": 10,
+        "last_updated": "2025-01-24 12:00:00"
+      }
+    }
+    ```
+
+- **Error**:
+    - Status: `404 Not Found`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Inventory not found for the given product ID"
+    }
+    ```
+
+---
+
+### **Adjust Available Quantity**
+
+#### Endpoint:
+- **Method**: `PUT`
+- **Path**: `/inventory/adjust/{product_id}`
+
+#### Description:
+Adjusts the available quantity for a product in inventory by a specified amount. The quantity cannot be negative.
+
+#### Request Parameters:
+- `product_id` (int) - The ID of the product whose inventory is being adjusted.
+- `quantity_change` (int) - The number of units to add or subtract from the available quantity. A positive number increases the available stock, while a negative number decreases it.
+
+#### Example Request:
+```json
+{
+  "quantity_change": 10
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "message": "Inventory updated successfully"
+    }
+    ```
+
+- **Error**: 
+    - Status: `400 Bad Request`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Failed to update inventory"
+    }
+    ```
+
+---
+
+### **Increment Quantity Sold**
+
+#### Endpoint:
+- **Method**: `PUT`
+- **Path**: `/inventory/increment-sold/{product_id}`
+
+#### Description:
+Increments the quantity sold for a product in the inventory.
+
+#### Request Parameters:
+- `product_id` (int) - The ID of the product whose sold quantity is being incremented.
+- `quantity` (int) - The number of units sold.
+
+#### Example Request:
+```json
+{
+  "quantity": 5
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "message": "Quantity sold updated successfully"
+    }
+    ```
+
+- **Error**: 
+    - Status: `400 Bad Request`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Failed to update quantity sold"
+    }
+    ```
+
+---
+
+### **Get All Inventory Records**
+
+#### Endpoint:
+- **Method**: `GET`
+- **Path**: `/inventory/all`
+
+#### Description:
+Retrieves all inventory records from the system.
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "inventory": [
+        {
+          "inventory_id": 1,
+          "product_id": 123,
+          "quantity_available": 50,
+          "quantity_sold": 10,
+          "last_updated": "2025-01-24 12:00:00"
+        },
+        {
+          "inventory_id": 2,
+          "product_id": 124,
+          "quantity_available": 20,
+          "quantity_sold": 5,
+          "last_updated": "2025-01-23 15:00:00"
+        }
+      ]
+    }
+    ```
+
+- **Error**:
+    - Status: `404 Not Found`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "No inventory records found"
+    }
+    ```
+
+---
+
+### Notes:
+- **Inventory Data**: Each inventory record is associated with a product (`product_id`). The available quantity and quantity sold are managed separately.
+- **Validation**: The class ensures that the available quantity and quantity sold are non-negative, and that the product exists before saving inventory data.

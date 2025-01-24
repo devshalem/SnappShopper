@@ -1,0 +1,286 @@
+## DatabaseObject Class Documentation
+
+The `DatabaseObject` class serves as a base class for other models in the system. It provides methods for interacting with the database using PDO, including functionalities for creating, updating, deleting, and retrieving records. All models extend this class to inherit its functionality.
+
+---
+
+### **Methods Overview**
+
+The methods in the `DatabaseObject` class allow derived classes to perform common database operations. The methods cover querying, inserting, and manipulating records in the database. Below is a detailed explanation of each method and how it is used.
+
+---
+
+### **1. Set Database Connection**
+
+#### Method:
+```php
+public static function setDatabase($pdo)
+```
+
+#### Description:
+This method sets the PDO database connection that is shared across all models. It must be called before any database operations are performed, usually in the initialization part of the application.
+
+#### Usage:
+- Typically, you will call this method in your initialization code, passing the PDO instance.
+
+#### Example:
+```php
+DatabaseObject::setDatabase($pdo); // Set the PDO database connection
+```
+
+---
+
+### **2. Execute Query with Prepared Statements**
+
+#### Method:
+```php
+static protected function executeQuery($sql, $params = [])
+```
+
+#### Description:
+This method executes a SQL query with optional parameters using prepared statements. It returns the statement object if the query is successful, or `false` if it fails.
+
+#### Usage:
+- All subclasses call this method to perform database operations (e.g., finding records, deleting records).
+- SQL queries are passed as string parameters, and parameters are passed as an associative array.
+
+#### Example:
+```php
+$sql = "SELECT * FROM users WHERE id = :id";
+$params = ['id' => $userId];
+$stmt = User::executeQuery($sql, $params); // Executes query
+```
+
+---
+
+### **3. Find Records by SQL**
+
+#### Method:
+```php
+public static function findBySql(string $sql, array $params = []): array
+```
+
+#### Description:
+This method retrieves records from the database using a raw SQL query. It returns an array of instantiated objects.
+
+#### Usage:
+- Used for custom queries where the built-in `findAll()` method is not sufficient.
+
+#### Example:
+```php
+$sql = "SELECT * FROM users WHERE status = :status";
+$params = ['status' => 'active'];
+$activeUsers = User::findBySql($sql, $params); // Retrieve active users
+```
+
+---
+
+### **4. Retrieve All Records**
+
+#### Method:
+```php
+public static function findAll(): array
+```
+
+#### Description:
+This method retrieves all records from the table associated with the model. It uses a `SELECT * FROM table_name` query internally.
+
+#### Usage:
+- Used to retrieve all records from the model’s corresponding table.
+
+#### Example:
+```php
+$users = User::findAll(); // Retrieves all users from the database
+```
+
+---
+
+### **5. Count All Records**
+
+#### Method:
+```php
+public static function countAll(): int
+```
+
+#### Description:
+This method returns the total number of records in the model’s corresponding table.
+
+#### Usage:
+- Useful for determining the total number of records, for pagination or other purposes.
+
+#### Example:
+```php
+$userCount = User::countAll(); // Get the total number of users
+```
+
+---
+
+### **6. Save the Current Record**
+
+#### Method:
+```php
+public function save(): bool
+```
+
+#### Description:
+This method saves the current instance of the model to the database. It calls the `create()` method internally to insert the record into the database.
+
+#### Usage:
+- Use this method when saving or creating a new record.
+
+#### Example:
+```php
+$user = new User($userData);
+$user->save(); // Save a new user to the database
+```
+
+---
+
+### **7. Create a New Record**
+
+#### Method:
+```php
+protected function create(): bool
+```
+
+#### Description:
+This method inserts a new record into the database. It is called internally by the `save()` method.
+
+#### Usage:
+- Generally not called directly, as `save()` should be used instead.
+
+#### Example:
+```php
+// This would be automatically called when using `save()`
+```
+
+---
+
+### **8. Delete a Record by ID**
+
+#### Method:
+```php
+public static function delete(int $id): bool
+```
+
+#### Description:
+This method deletes a record from the database by its unique ID.
+
+#### Usage:
+- Call this method to delete a record based on its ID.
+
+#### Example:
+```php
+User::delete(5); // Deletes the user with ID 5
+```
+
+---
+
+### **9. Merge Attributes from an Array**
+
+#### Method:
+```php
+public function mergeAttributes(array $args = []): void
+```
+
+#### Description:
+This method updates the object's properties with the provided array. It only updates properties that are already set in the object, and only if the value is not `null`.
+
+#### Usage:
+- Use this method to update the properties of an object after it has been created.
+
+#### Example:
+```php
+$user = new User();
+$user->mergeAttributes(['name' => 'John Doe', 'email' => 'john@example.com']);
+```
+
+---
+
+### **10. Get Object Attributes**
+
+#### Method:
+```php
+public function attributes()
+```
+
+#### Description:
+This method retrieves all the attributes of the object, excluding the `id` field, for use in inserts.
+
+#### Usage:
+- This method is used to retrieve the object's properties in preparation for insertion into the database.
+
+#### Example:
+```php
+$user = new User($userData);
+$attributes = $user->attributes(); // Get object attributes for insertion
+```
+
+---
+
+### **11. Sanitize Attributes Before Saving**
+
+#### Method:
+```php
+protected function sanitizedAttributes()
+```
+
+#### Description:
+This method sanitizes the attributes by converting special characters to HTML entities. This helps prevent security vulnerabilities like XSS (Cross-Site Scripting).
+
+#### Usage:
+- Automatically called during the `create()` process to ensure all attributes are sanitized.
+
+#### Example:
+```php
+// This method is called internally, no need for manual use
+```
+
+---
+
+### **12. Instantiate an Object from a Record**
+
+#### Method:
+```php
+protected static function instantiate(array $record): static
+```
+
+#### Description:
+This method creates an instance of the object and sets its properties based on the provided database record.
+
+#### Usage:
+- Called internally to convert a database row into an object instance.
+
+#### Example:
+```php
+// This method is automatically called when using `findBySql` or similar methods
+```
+
+---
+
+### Usage in Other Classes
+
+When extending the `DatabaseObject` class, models inherit all of these methods and can use them to interact with the database. For instance:
+
+- **Creating a User**:
+  ```php
+  $user = new User(['name' => 'John Doe', 'email' => 'john@example.com']);
+  $user->save();
+  ```
+
+- **Retrieving all Users**:
+  ```php
+  $users = User::findAll();
+  ```
+
+- **Counting Users**:
+  ```php
+  $userCount = User::countAll();
+  ```
+
+- **Deleting a User**:
+  ```php
+  User::delete(5);
+  ```
+
+By leveraging these built-in methods, models can easily interact with the database without having to manually handle SQL queries.

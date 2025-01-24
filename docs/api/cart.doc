@@ -1,0 +1,259 @@
+## API Documentation for Cart Class
+
+### Overview
+The `Cart` class manages the shopping cart for a user, providing methods to add, remove, and update items, retrieve the total price of the cart, and check if the cart is empty.
+
+---
+
+### **Add Product to Cart**
+
+#### Endpoint:
+- **Method**: `POST`
+- **Path**: `/cart/add`
+
+#### Description:
+Adds a product to the user's cart. If the product is already in the cart, it updates the quantity.
+
+#### Request Parameters:
+- `product_id` (int) - The ID of the product to be added.
+- `quantity` (int) - The quantity of the product to be added.
+
+#### Example Request:
+```json
+{
+  "product_id": 123,
+  "quantity": 2
+}
+```
+
+#### Response:
+- **Success**: 
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "message": "Product added to cart"
+    }
+    ```
+
+- **Error**: 
+    - Status: `400 Bad Request`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Failed to add product to cart"
+    }
+    ```
+
+---
+
+### **Remove Product from Cart**
+
+#### Endpoint:
+- **Method**: `DELETE`
+- **Path**: `/cart/remove/{product_id}`
+
+#### Description:
+Removes a product from the user's cart.
+
+#### Request Parameters:
+- `product_id` (int) - The ID of the product to be removed.
+
+#### Example Request:
+```json
+{
+  "product_id": 123
+}
+```
+
+#### Response:
+- **Success**: 
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "message": "Product removed from cart"
+    }
+    ```
+
+- **Error**: 
+    - Status: `400 Bad Request`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Failed to remove product from cart"
+    }
+    ```
+
+---
+
+### **Get Items in Cart**
+
+#### Endpoint:
+- **Method**: `GET`
+- **Path**: `/cart/items`
+
+#### Description:
+Retrieves all items currently in the user's cart.
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "items": [
+        {
+          "product_id": 123,
+          "product_name": "Product 1",
+          "quantity": 2,
+          "price": 19.99
+        },
+        {
+          "product_id": 124,
+          "product_name": "Product 2",
+          "quantity": 1,
+          "price": 9.99
+        }
+      ]
+    }
+    ```
+
+- **Error**:
+    - Status: `404 Not Found`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "No items found in cart"
+    }
+    ```
+
+---
+
+### **Update Product Quantity in Cart**
+
+#### Endpoint:
+- **Method**: `PUT`
+- **Path**: `/cart/update/{product_id}`
+
+#### Description:
+Updates the quantity of a specific product in the cart.
+
+#### Request Parameters:
+- `product_id` (int) - The ID of the product to update.
+- `quantity` (int) - The new quantity of the product.
+
+#### Example Request:
+```json
+{
+  "quantity": 3
+}
+```
+
+#### Response:
+- **Success**: 
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "message": "Product quantity updated"
+    }
+    ```
+
+- **Error**: 
+    - Status: `400 Bad Request`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Failed to update product quantity"
+    }
+    ```
+
+---
+
+### **Get Total Price of Cart**
+
+#### Endpoint:
+- **Method**: `GET`
+- **Path**: `/cart/total`
+
+#### Description:
+Retrieves the total price of all items in the user's cart.
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "total_price": 49.97
+    }
+    ```
+
+- **Error**:
+    - Status: `404 Not Found`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Failed to retrieve total price"
+    }
+    ```
+
+---
+
+### **Check if Cart is Empty**
+
+#### Endpoint:
+- **Method**: `GET`
+- **Path**: `/cart/empty`
+
+#### Description:
+Checks if the user's cart is empty.
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "is_empty": true
+    }
+    ```
+
+    or
+
+    ```json
+    {
+      "status": "success",
+      "is_empty": false
+    }
+    ```
+
+- **Error**:
+    - Status: `404 Not Found`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Failed to check if cart is empty"
+    }
+    ```
+
+---
+
+### Notes:
+- **CartItem**: The `Cart` class relies on the `CartItem` class for adding, removing, and updating items in the cart. This assumes that the `CartItem` class manages individual product details in the cart.
+- **Cart Structure**: The `Cart` class stores the cart information (e.g., `cart_id`, `user_id`, etc.), while the actual items and their quantities are stored in the `Cart_Items` table.
+
+This class provides the fundamental operations needed to manage a shopping cart system for an e-commerce platform.

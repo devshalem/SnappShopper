@@ -1,0 +1,333 @@
+## API Documentation for `Orders` Class
+
+### Overview
+The `Orders` class handles the management of orders within the application. It supports creating, updating, retrieving, and validating orders. It also allows filtering orders based on user, status, or date range.
+
+---
+
+### **Create or Update Order**
+
+#### Endpoint:
+- **Method**: `POST`
+- **Path**: `/orders/save`
+
+#### Description:
+Creates a new order or updates an existing order.
+
+#### Request Parameters:
+- `user_id` (int) - The ID of the user placing the order.
+- `order_date` (string) - The date when the order was placed.
+- `status` (string, optional) - The current status of the order (default is "Pending").
+- `total_amount` (float) - The total amount of the order.
+- `created_at` (string, optional) - The timestamp when the order was created.
+- `updated_at` (string, optional) - The timestamp when the order was last updated.
+
+#### Example Request:
+```json
+{
+  "user_id": 1,
+  "order_date": "2025-01-24",
+  "status": "Pending",
+  "total_amount": 150.75,
+  "created_at": "2025-01-24 12:00:00",
+  "updated_at": "2025-01-24 12:00:00"
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "message": "Order saved successfully"
+    }
+    ```
+
+- **Error**:
+    - Status: `400 Bad Request`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Validation failed",
+      "errors": [
+        "User ID is required.",
+        "Total amount must be greater than 0."
+      ]
+    }
+    ```
+
+---
+
+### **Retrieve All Orders**
+
+#### Endpoint:
+- **Method**: `GET`
+- **Path**: `/orders`
+
+#### Description:
+Retrieves all orders from the database.
+
+#### Request Parameters: None
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "orders": [
+        {
+          "order_id": 1,
+          "user_id": 1,
+          "order_date": "2025-01-24",
+          "status": "Pending",
+          "total_amount": 150.75,
+          "created_at": "2025-01-24 12:00:00",
+          "updated_at": "2025-01-24 12:00:00"
+        },
+        {
+          "order_id": 2,
+          "user_id": 2,
+          "order_date": "2025-01-23",
+          "status": "Shipped",
+          "total_amount": 120.50,
+          "created_at": "2025-01-23 14:00:00",
+          "updated_at": "2025-01-23 14:30:00"
+        }
+      ]
+    }
+    ```
+
+---
+
+### **Retrieve Orders by User ID**
+
+#### Endpoint:
+- **Method**: `GET`
+- **Path**: `/orders/user/{user_id}`
+
+#### Description:
+Retrieves all orders associated with a specific user ID.
+
+#### Request Parameters:
+- `user_id` (int) - The ID of the user whose orders to retrieve.
+
+#### Example Request:
+```json
+{
+  "user_id": 1
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "orders": [
+        {
+          "order_id": 1,
+          "user_id": 1,
+          "order_date": "2025-01-24",
+          "status": "Pending",
+          "total_amount": 150.75,
+          "created_at": "2025-01-24 12:00:00",
+          "updated_at": "2025-01-24 12:00:00"
+        }
+      ]
+    }
+    ```
+
+- **Error**:
+    - Status: `404 Not Found`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "No orders found for the given user ID"
+    }
+    ```
+
+---
+
+### **Retrieve Order by ID**
+
+#### Endpoint:
+- **Method**: `GET`
+- **Path**: `/orders/{order_id}`
+
+#### Description:
+Retrieves a specific order by its unique order ID.
+
+#### Request Parameters:
+- `order_id` (int) - The ID of the order to retrieve.
+
+#### Example Request:
+```json
+{
+  "order_id": 1
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "order": {
+        "order_id": 1,
+        "user_id": 1,
+        "order_date": "2025-01-24",
+        "status": "Pending",
+        "total_amount": 150.75,
+        "created_at": "2025-01-24 12:00:00",
+        "updated_at": "2025-01-24 12:00:00"
+      }
+    }
+    ```
+
+- **Error**:
+    - Status: `404 Not Found`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Order not found"
+    }
+    ```
+
+---
+
+### **Update Order Status**
+
+#### Endpoint:
+- **Method**: `PATCH`
+- **Path**: `/orders/{order_id}/status`
+
+#### Description:
+Updates the status of an order.
+
+#### Request Parameters:
+- `order_id` (int) - The ID of the order to update.
+- `new_status` (string) - The new status for the order. Valid statuses: `Pending`, `Shipped`, `Delivered`, `Cancelled`.
+
+#### Example Request:
+```json
+{
+  "new_status": "Shipped"
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "message": "Order status updated successfully"
+    }
+    ```
+
+- **Error**:
+    - Status: `400 Bad Request`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid order status"
+    }
+    ```
+
+---
+
+### **Retrieve Pending Orders**
+
+#### Endpoint:
+- **Method**: `GET`
+- **Path**: `/orders/pending`
+
+#### Description:
+Retrieves all orders with the status `Pending`.
+
+#### Request Parameters: None
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "orders": [
+        {
+          "order_id": 1,
+          "user_id": 1,
+          "order_date": "2025-01-24",
+          "status": "Pending",
+          "total_amount": 150.75,
+          "created_at": "2025-01-24 12:00:00",
+          "updated_at": "2025-01-24 12:00:00"
+        }
+      ]
+    }
+    ```
+
+---
+
+### **Retrieve Orders by Date Range**
+
+#### Endpoint:
+- **Method**: `GET`
+- **Path**: `/orders/date-range`
+
+#### Description:
+Retrieves orders placed within a specific date range.
+
+#### Request Parameters:
+- `start_date` (string) - The start date of the range (format: `YYYY-MM-DD`).
+- `end_date` (string) - The end date of the range (format: `YYYY-MM-DD`).
+
+#### Example Request:
+```json
+{
+  "start_date": "2025-01-01",
+  "end_date": "2025-01-24"
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "orders": [
+        {
+          "order_id": 1,
+          "user_id": 1,
+          "order_date": "2025-01-24",
+          "status": "Pending",
+          "total_amount": 150.75,
+          "created_at": "2025-01-24 12:00:00",
+          "updated_at": "2025-01-24 12:00:00"
+        }
+      ]
+    }
+    ```
+
+---
+
+### Notes:
+- **Validation**: The following fields are required for creating or updating an order: `user_id` and `total_amount`. The `status` field must be a valid value from the predefined list: `Pending`, `Shipped`, `Delivered`, `Cancelled`.
+- **Date Format**: The `order_date`, `created_at`, and `updated_at` fields should be in the `YYYY-MM-DD HH:MM:SS` format.
+- **Status Changes**: Only specific statuses (`Pending`, `Shipped`, `Delivered`, `Cancelled`) are valid for updates.

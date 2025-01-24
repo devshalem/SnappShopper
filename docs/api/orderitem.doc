@@ -1,0 +1,217 @@
+## API Documentation for `Order_Item` Class
+
+### Overview
+The `Order_Item` class is used to manage items in an order, including creating, updating, retrieving, and validating order items. It calculates the total price for the items and ensures that all required fields are present and valid before saving an order item to the database.
+
+---
+
+### **Create or Update Order Item**
+
+#### Endpoint:
+- **Method**: `POST`
+- **Path**: `/order-items/save`
+
+#### Description:
+Creates or updates an order item in the database. If an existing item needs to be updated, it will replace the current record.
+
+#### Request Parameters:
+- `order_id` (int) - The ID of the order the item belongs to.
+- `product_id` (int) - The ID of the product.
+- `quantity` (int) - The quantity of the product ordered.
+- `price_at_purchase` (float) - The price of the product at the time of purchase.
+- `created_at` (string, optional) - The timestamp of when the order item was created.
+
+#### Example Request:
+```json
+{
+  "order_id": 1,
+  "product_id": 123,
+  "quantity": 2,
+  "price_at_purchase": 45.99,
+  "created_at": "2025-01-24 12:00:00"
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "message": "Order item saved successfully"
+    }
+    ```
+
+- **Error**:
+    - Status: `400 Bad Request`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Validation failed",
+      "errors": [
+        "Order ID is required.",
+        "Product ID is required.",
+        "Quantity must be a positive integer.",
+        "Price at purchase must be a positive amount."
+      ]
+    }
+    ```
+
+---
+
+### **Retrieve All Order Items by Order ID**
+
+#### Endpoint:
+- **Method**: `GET`
+- **Path**: `/order-items/order/{order_id}`
+
+#### Description:
+Retrieves all order items associated with a specific order ID.
+
+#### Request Parameters:
+- `order_id` (int) - The ID of the order to retrieve items for.
+
+#### Example Request:
+```json
+{
+  "order_id": 1
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "order_items": [
+        {
+          "order_item_id": 1,
+          "order_id": 1,
+          "product_id": 123,
+          "quantity": 2,
+          "price_at_purchase": 45.99,
+          "created_at": "2025-01-24 12:00:00"
+        },
+        {
+          "order_item_id": 2,
+          "order_id": 1,
+          "product_id": 456,
+          "quantity": 1,
+          "price_at_purchase": 99.99,
+          "created_at": "2025-01-24 12:05:00"
+        }
+      ]
+    }
+    ```
+
+- **Error**:
+    - Status: `404 Not Found`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "No order items found for the given order ID"
+    }
+    ```
+
+---
+
+### **Retrieve Order Item by ID**
+
+#### Endpoint:
+- **Method**: `GET`
+- **Path**: `/order-items/{order_item_id}`
+
+#### Description:
+Retrieves a specific order item by its unique `order_item_id`.
+
+#### Request Parameters:
+- `order_item_id` (int) - The ID of the order item to retrieve.
+
+#### Example Request:
+```json
+{
+  "order_item_id": 1
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "order_item": {
+        "order_item_id": 1,
+        "order_id": 1,
+        "product_id": 123,
+        "quantity": 2,
+        "price_at_purchase": 45.99,
+        "created_at": "2025-01-24 12:00:00"
+      }
+    }
+    ```
+
+- **Error**:
+    - Status: `404 Not Found`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Order item not found"
+    }
+    ```
+
+---
+
+### **Calculate Total Price for Order Item**
+
+#### Endpoint:
+- **Method**: `GET`
+- **Path**: `/order-items/calculate-total-price/{order_item_id}`
+
+#### Description:
+Calculates the total price for an order item based on its quantity and price at purchase.
+
+#### Request Parameters:
+- `order_item_id` (int) - The ID of the order item to calculate the total price for.
+
+#### Example Request:
+```json
+{
+  "order_item_id": 1
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "total_price": 91.98
+    }
+    ```
+
+- **Error**:
+    - Status: `400 Bad Request`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Failed to calculate total price"
+    }
+    ```
+
+---
+
+### Notes:
+- **Validation**: The following fields are required for creating an order item: `order_id`, `product_id`, `quantity`, and `price_at_purchase`. All fields must be properly validated before saving.
+- **Price Calculation**: The total price is calculated as `quantity * price_at_purchase`. This is useful for checkout calculations or inventory management.
+- **Timestamps**: The `created_at` timestamp is optional and defaults to the current time if not provided.

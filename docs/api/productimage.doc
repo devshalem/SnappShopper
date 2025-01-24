@@ -1,0 +1,180 @@
+Here is the API documentation for the `ProductImage` class in your PHP application:
+
+---
+
+## Product Image API Documentation
+
+### Overview
+
+The `ProductImage` class manages product images within the database, providing functionality for adding, retrieving, and deleting images for products. It also performs validations to ensure data integrity.
+
+---
+
+### Endpoints
+
+#### 1. **POST /product_images/save**
+- **Description**: Save or update a product image.
+- **Method**: `POST`
+- **Request Body** (JSON):
+
+```json
+{
+  "image_id": "optional",
+  "product_id": "required",
+  "image_url": "required",
+  "alt_text": "optional",
+  "created_at": "optional"
+}
+```
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    {
+      "status": "success",
+      "message": "Image saved successfully"
+    }
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "Validation failed",
+      "errors": ["error_message_1", "error_message_2"]
+    }
+    ```
+
+- **Notes**: 
+  - If `image_id` is provided, the image is updated. If not, a new image is created.
+  - Validation errors will return a list of error messages.
+
+---
+
+#### 2. **GET /product_images/{product_id}**
+- **Description**: Retrieve all images for a given product.
+- **Method**: `GET`
+- **URL Parameters**:
+  - `product_id`: The ID of the product to fetch images for.
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    [
+      {
+        "image_id": 1,
+        "product_id": 101,
+        "image_url": "http://example.com/image1.jpg",
+        "alt_text": "Image 1",
+        "created_at": "2025-01-24 14:00:00"
+      },
+      {
+        "image_id": 2,
+        "product_id": 101,
+        "image_url": "http://example.com/image2.jpg",
+        "alt_text": "Image 2",
+        "created_at": "2025-01-24 15:00:00"
+      }
+    ]
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "No images found for the specified product."
+    }
+    ```
+
+- **Notes**: 
+  - This will return an array of images associated with the specified `product_id`.
+
+---
+
+#### 3. **DELETE /product_images/{image_id}**
+- **Description**: Delete a product image by `image_id`.
+- **Method**: `DELETE`
+- **URL Parameters**:
+  - `image_id`: The ID of the image to delete.
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    {
+      "status": "success",
+      "message": "Image deleted successfully"
+    }
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "Failed to delete image"
+    }
+    ```
+
+- **Notes**: 
+  - The image will be deleted based on the provided `image_id`.
+  - If no image is found or deletion fails, an error message is returned.
+
+---
+
+### Class Methods
+
+#### `saveImage()`
+- **Description**: Save or update an image in the database.
+- **Returns**: 
+  - On success: `['status' => 'success', 'message' => 'Image saved successfully']`
+  - On failure: `['status' => 'error', 'message' => 'Validation failed', 'errors' => ['error_message']]`
+
+#### `findImagesByProduct($product_id)`
+- **Description**: Retrieves all images associated with a given product.
+- **Parameters**:
+  - `product_id`: The ID of the product to fetch images for.
+- **Returns**: An array of images associated with the specified `product_id`.
+
+#### `deleteImage($image_id)`
+- **Description**: Deletes an image from the database.
+- **Parameters**:
+  - `image_id`: The ID of the image to be deleted.
+- **Returns**: 
+  - On success: `['status' => 'success', 'message' => 'Image deleted successfully']`
+  - On failure: `['status' => 'error', 'message' => 'Failed to delete image']`
+
+#### `validate()`
+- **Description**: Validates the data for the image.
+- **Returns**: An array of validation errors (if any). If validation is successful, the array will be empty.
+
+#### `is_blank($value)`
+- **Description**: Helper function to check if a value is blank.
+- **Returns**: `true` if the value is blank, otherwise `false`.
+
+---
+
+### Error Codes
+
+| Error Code | Description                                |
+|------------|--------------------------------------------|
+| `400`      | Bad request, typically due to validation errors. |
+| `404`      | Not found, such as when no images are found for a product or when attempting to delete a non-existent image. |
+| `500`      | Internal server error, such as database connection failure. |
+
+---
+
+### Validation Errors
+- `"Invalid product ID."` – If the product ID provided does not exist in the `Products` table.
+- `"Image URL cannot be blank."` – If the `image_url` field is empty.
+
+---
+
+### Notes
+- **Product ID Validity**: The `product_id` must reference a valid entry in the `Products` table. Images will not be associated with non-existent products.
+- **Image URL**: The `image_url` must be a valid URL to an image resource.
+
+--- 
+
+This documentation outlines the core functionality of the `ProductImage` class and its associated API endpoints. The class provides methods to manage product images, including adding, retrieving, and deleting images from the database, while ensuring data integrity through validation.

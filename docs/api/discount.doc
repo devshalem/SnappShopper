@@ -1,0 +1,251 @@
+## API Documentation for Discount Class
+
+### Overview
+The `Discount` class manages discount-related operations, including saving a discount, validating the discount code, and retrieving active discounts. It interacts with the database to store and retrieve discount information.
+
+---
+
+### **Save Discount**
+
+#### Endpoint:
+- **Method**: `POST`
+- **Path**: `/discount/save`
+
+#### Description:
+Saves a new discount to the database. Performs validation before saving.
+
+#### Request Parameters:
+- `code` (string) - The discount code.
+- `discount_percentage` (float) - The percentage of the discount (between 0 and 100).
+- `start_date` (string) - The start date of the discount (YYYY-MM-DD).
+- `end_date` (string) - The end date of the discount (YYYY-MM-DD).
+- `usage_limit` (int) - The usage limit for the discount.
+
+#### Example Request:
+```json
+{
+  "code": "SAVE20",
+  "discount_percentage": 20,
+  "start_date": "2025-01-01",
+  "end_date": "2025-12-31",
+  "usage_limit": 100
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "message": "Discount saved successfully"
+    }
+    ```
+
+- **Error**:
+    - Status: `400 Bad Request`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Validation failed",
+      "errors": ["Discount code cannot be empty.", "Discount percentage must be between 0 and 100."]
+    }
+    ```
+
+---
+
+### **Check Valid Discount Code**
+
+#### Endpoint:
+- **Method**: `GET`
+- **Path**: `/discount/validate/{code}`
+
+#### Description:
+Checks if a discount code is valid and not expired. Returns the discount details if valid.
+
+#### Request Parameters:
+- `code` (string) - The discount code to validate.
+
+#### Example Request:
+```json
+{
+  "code": "SAVE20"
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "message": "Discount code is valid",
+      "discount": {
+        "discount_id": 1,
+        "code": "SAVE20",
+        "discount_percentage": 20,
+        "start_date": "2025-01-01",
+        "end_date": "2025-12-31",
+        "usage_limit": 100
+      }
+    }
+    ```
+
+- **Error**:
+    - Status: `404 Not Found`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Discount code not found or expired"
+    }
+    ```
+
+---
+
+### **Get All Active Discounts**
+
+#### Endpoint:
+- **Method**: `GET`
+- **Path**: `/discount/active`
+
+#### Description:
+Retrieves all active discounts that are valid based on the current date and have remaining usage.
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "discounts": [
+        {
+          "discount_id": 1,
+          "code": "SAVE20",
+          "discount_percentage": 20,
+          "start_date": "2025-01-01",
+          "end_date": "2025-12-31",
+          "usage_limit": 100
+        },
+        {
+          "discount_id": 2,
+          "code": "NEWYEAR15",
+          "discount_percentage": 15,
+          "start_date": "2025-01-01",
+          "end_date": "2025-12-31",
+          "usage_limit": 50
+        }
+      ]
+    }
+    ```
+
+- **Error**:
+    - Status: `404 Not Found`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "No active discounts found"
+    }
+    ```
+
+---
+
+### **Decrement Discount Usage Limit**
+
+#### Endpoint:
+- **Method**: `PUT`
+- **Path**: `/discount/decrement/{discount_id}`
+
+#### Description:
+Decreases the usage limit of a discount by 1 after it is used.
+
+#### Request Parameters:
+- `discount_id` (int) - The ID of the discount to decrement.
+
+#### Example Request:
+```json
+{
+  "discount_id": 1
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "message": "Discount usage limit decremented"
+    }
+    ```
+
+- **Error**:
+    - Status: `400 Bad Request`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Failed to decrement discount usage limit"
+    }
+    ```
+
+---
+
+### **Retrieve Discount by Code**
+
+#### Endpoint:
+- **Method**: `GET`
+- **Path**: `/discount/code/{code}`
+
+#### Description:
+Retrieves a discount by its code.
+
+#### Request Parameters:
+- `code` (string) - The discount code to retrieve.
+
+#### Example Request:
+```json
+{
+  "code": "SAVE20"
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "discount": {
+        "discount_id": 1,
+        "code": "SAVE20",
+        "discount_percentage": 20,
+        "start_date": "2025-01-01",
+        "end_date": "2025-12-31",
+        "usage_limit": 100
+      }
+    }
+    ```
+
+- **Error**:
+    - Status: `404 Not Found`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Discount code not found"
+    }
+    ```
+
+---
+
+### Notes:
+- **Discount Object**: The `Discount` class interacts with the database to create, validate, and manage discounts. It uses the `DatabaseObject` class for database operations.
+- **Discount Data**: Discounts are stored in the `Discounts` table, with attributes such as discount code, percentage, start and end dates, and usage limit.

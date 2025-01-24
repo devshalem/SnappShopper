@@ -1,0 +1,241 @@
+## API Documentation for `Payment` Class
+
+### Overview
+The `Payment` class is responsible for handling payment processing for orders. It includes features for saving and updating payment information, retrieving payment records, validating payment data, and marking payments as completed or failed.
+
+---
+
+### **Create or Update Payment**
+
+#### Endpoint:
+- **Method**: `POST`
+- **Path**: `/payments/save`
+
+#### Description:
+Creates a new payment or updates an existing payment record.
+
+#### Request Parameters:
+- `order_id` (int) - The ID of the order associated with the payment.
+- `amount` (float) - The total amount of the payment.
+- `payment_date` (string, optional) - The date when the payment was made.
+- `payment_method` (string) - The method used for payment (e.g., "Credit Card", "PayPal", "Bank Transfer").
+- `status` (string, optional) - The status of the payment (default is "Pending").
+- `created_at` (string, optional) - The timestamp when the payment was created.
+
+#### Example Request:
+```json
+{
+  "order_id": 1,
+  "amount": 150.75,
+  "payment_date": "2025-01-24",
+  "payment_method": "Credit Card",
+  "status": "Pending",
+  "created_at": "2025-01-24 12:00:00"
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "message": "Payment processed successfully"
+    }
+    ```
+
+- **Error**:
+    - Status: `400 Bad Request`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Validation failed",
+      "errors": [
+        "Order ID is required.",
+        "Amount must be a positive value.",
+        "Payment method is required."
+      ]
+    }
+    ```
+
+---
+
+### **Retrieve All Payments for an Order**
+
+#### Endpoint:
+- **Method**: `GET`
+- **Path**: `/payments/order/{order_id}`
+
+#### Description:
+Retrieves all payments associated with a specific order by its ID.
+
+#### Request Parameters:
+- `order_id` (int) - The ID of the order for which payments are being retrieved.
+
+#### Example Request:
+```json
+{
+  "order_id": 1
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "payments": [
+        {
+          "payment_id": 1,
+          "order_id": 1,
+          "amount": 150.75,
+          "payment_date": "2025-01-24",
+          "payment_method": "Credit Card",
+          "status": "Pending",
+          "created_at": "2025-01-24 12:00:00"
+        }
+      ]
+    }
+    ```
+
+- **Error**:
+    - Status: `404 Not Found`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "No payments found for the given order ID"
+    }
+    ```
+
+---
+
+### **Retrieve Payment by ID**
+
+#### Endpoint:
+- **Method**: `GET`
+- **Path**: `/payments/{payment_id}`
+
+#### Description:
+Retrieves a specific payment by its payment ID.
+
+#### Request Parameters:
+- `payment_id` (int) - The ID of the payment to retrieve.
+
+#### Example Request:
+```json
+{
+  "payment_id": 1
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "payment": {
+        "payment_id": 1,
+        "order_id": 1,
+        "amount": 150.75,
+        "payment_date": "2025-01-24",
+        "payment_method": "Credit Card",
+        "status": "Pending",
+        "created_at": "2025-01-24 12:00:00"
+      }
+    }
+    ```
+
+- **Error**:
+    - Status: `404 Not Found`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Payment not found"
+    }
+    ```
+
+---
+
+### **Update Payment Status to Completed**
+
+#### Endpoint:
+- **Method**: `PATCH`
+- **Path**: `/payments/{payment_id}/status/completed`
+
+#### Description:
+Marks a payment as completed.
+
+#### Request Parameters:
+- `payment_id` (int) - The ID of the payment to update.
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "message": "Payment status updated to 'Completed'"
+    }
+    ```
+
+- **Error**:
+    - Status: `400 Bad Request`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid payment ID"
+    }
+    ```
+
+---
+
+### **Update Payment Status to Failed**
+
+#### Endpoint:
+- **Method**: `PATCH`
+- **Path**: `/payments/{payment_id}/status/failed`
+
+#### Description:
+Marks a payment as failed.
+
+#### Request Parameters:
+- `payment_id` (int) - The ID of the payment to update.
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "message": "Payment status updated to 'Failed'"
+    }
+    ```
+
+- **Error**:
+    - Status: `400 Bad Request`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid payment ID"
+    }
+    ```
+
+---
+
+### Notes:
+- **Validation**: The `order_id`, `amount`, and `payment_method` fields are required for creating or updating a payment. The `status` field must be one of the following: `Completed`, `Pending`, `Failed`.
+- **Amount**: The `amount` should always be a positive number.
+- **Payment Method**: The `payment_method` should be one of the following: `Credit Card`, `PayPal`, `Bank Transfer`.
+- **Date Format**: The `payment_date` and `created_at` fields should follow the `YYYY-MM-DD HH:MM:SS` format.

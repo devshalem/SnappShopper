@@ -1,0 +1,287 @@
+Here is the API documentation for the `Vendor` class in your PHP application:
+
+---
+
+## Vendor API Documentation
+
+### Overview
+
+The `Vendor` class manages operations related to vendors in the system. It allows for creating, updating, deleting, and retrieving vendor information. The class provides methods for saving vendor details, validating the data, and querying vendors by their email or ID.
+
+---
+
+### Endpoints
+
+#### 1. **POST /api/vendor/save**
+- **Description**: Create or update a vendor.
+- **Method**: `POST`
+- **Request Body** (JSON):
+
+```json
+{
+  "vendor_id": "optional",
+  "name": "required",
+  "email": "required",
+  "phone_number": "optional",
+  "address": "optional"
+}
+```
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    {
+      "status": "success",
+      "message": "Vendor saved successfully"
+    }
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "Validation failed",
+      "errors": [
+        "Vendor name cannot be empty.",
+        "Vendor email cannot be empty.",
+        "Invalid email format."
+      ]
+    }
+    ```
+
+- **Notes**:
+  - The `vendor_id` is optional. If provided, the vendor will be updated; otherwise, a new vendor will be created.
+  - Validation errors will be returned in the `errors` array.
+  - The `email` must be in a valid format.
+
+---
+
+#### 2. **GET /api/vendor/email/{email}**
+- **Description**: Retrieve a vendor by email.
+- **Method**: `GET`
+- **URL Parameters**:
+  - `email`: The email address of the vendor.
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    {
+      "vendor_id": 1,
+      "name": "Vendor Name",
+      "email": "vendor@example.com",
+      "phone_number": "1234567890",
+      "address": "Vendor Address",
+      "created_at": "2025-01-24T12:00:00Z",
+      "updated_at": "2025-01-24T12:00:00Z"
+    }
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "Vendor not found"
+    }
+    ```
+
+- **Notes**:
+  - Returns the vendor information for the given email address.
+
+---
+
+#### 3. **GET /api/vendor/{vendor_id}**
+- **Description**: Retrieve a vendor by ID.
+- **Method**: `GET`
+- **URL Parameters**:
+  - `vendor_id`: The ID of the vendor.
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    {
+      "vendor_id": 1,
+      "name": "Vendor Name",
+      "email": "vendor@example.com",
+      "phone_number": "1234567890",
+      "address": "Vendor Address",
+      "created_at": "2025-01-24T12:00:00Z",
+      "updated_at": "2025-01-24T12:00:00Z"
+    }
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "Vendor not found"
+    }
+    ```
+
+- **Notes**:
+  - Retrieves the vendor information for the given `vendor_id`.
+
+---
+
+#### 4. **DELETE /api/vendor/delete/{vendor_id}**
+- **Description**: Delete a vendor by ID.
+- **Method**: `DELETE`
+- **URL Parameters**:
+  - `vendor_id`: The ID of the vendor to delete.
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    {
+      "status": "success",
+      "message": "Vendor deleted successfully"
+    }
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "Failed to delete vendor"
+    }
+    ```
+
+- **Notes**:
+  - Deletes the vendor with the specified `vendor_id`.
+
+---
+
+#### 5. **PUT /api/vendor/update/{vendor_id}**
+- **Description**: Update the details of an existing vendor.
+- **Method**: `PUT`
+- **URL Parameters**:
+  - `vendor_id`: The ID of the vendor to update.
+
+- **Request Body** (JSON):
+
+```json
+{
+  "name": "required",
+  "email": "required",
+  "phone_number": "optional",
+  "address": "optional"
+}
+```
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    {
+      "status": "success",
+      "message": "Vendor updated successfully"
+    }
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "Validation failed",
+      "errors": [
+        "Vendor name cannot be empty.",
+        "Vendor email cannot be empty.",
+        "Invalid email format."
+      ]
+    }
+    ```
+
+- **Notes**:
+  - The request body must include the updated `name` and `email` fields. Optionally, `phone_number` and `address` can be updated.
+  - Validation errors will be returned in the `errors` array.
+
+---
+
+### Class Methods
+
+#### `saveVendor()`
+- **Description**: Saves or updates a vendor.
+- **Returns**:
+  - **On success**:
+    ```json
+    {
+      "status": "success",
+      "message": "Vendor saved successfully"
+    }
+    ```
+  - **On failure**:
+    ```json
+    {
+      "status": "error",
+      "message": "Validation failed",
+      "errors": ["error_message"]
+    }
+    ```
+
+#### `validate()`
+- **Description**: Validates the vendor data.
+- **Returns**: An array of validation errors. If validation is successful, the array will be empty.
+
+#### `findByEmail($email)`
+- **Description**: Retrieves a vendor by email.
+- **Parameters**:
+  - `email`: The email address of the vendor.
+- **Returns**: A `Vendor` object if found, or `null` if not found.
+
+#### `findVendorById($vendor_id)`
+- **Description**: Retrieves a vendor by ID.
+- **Parameters**:
+  - `vendor_id`: The ID of the vendor.
+- **Returns**: A `Vendor` object if found, or `null` if not found.
+
+#### `deleteById($vendor_id)`
+- **Description**: Deletes a vendor by ID.
+- **Parameters**:
+  - `vendor_id`: The ID of the vendor to delete.
+- **Returns**: `true` if the vendor was deleted successfully, or `false` if there was an error.
+
+#### `updateVendor()`
+- **Description**: Updates the details of a vendor.
+- **Returns**:
+  - **On success**:
+    ```json
+    {
+      "status": "success",
+      "message": "Vendor updated successfully"
+    }
+    ```
+  - **On failure**:
+    ```json
+    {
+      "status": "error",
+      "message": "Validation failed",
+      "errors": ["error_message"]
+    }
+    ```
+
+---
+
+### Error Codes
+
+| Error Code | Description                                                |
+|------------|------------------------------------------------------------|
+| `400`      | Bad request (typically due to missing or invalid data).    |
+| `404`      | Not found (e.g., no vendor found by email or ID).          |
+| `500`      | Internal server error (e.g., database connection issue).    |
+
+---
+
+### Validation Errors
+- `"Vendor name cannot be empty."` – The `name` field is required when creating or updating a vendor.
+- `"Vendor email cannot be empty."` – The `email` field is required when creating or updating a vendor.
+- `"Invalid email format."` – The `email` field must contain a valid email address format.
+
+---
+
+### Notes
+- **Vendor ID**: The `vendor_id` must be unique and reference a specific vendor in the system.
+- **Email**: The `email` must be unique and formatted correctly when creating or updating a vendor.
+- **Phone Number**: The `phone_number` is optional but can be included for the vendor's contact details.

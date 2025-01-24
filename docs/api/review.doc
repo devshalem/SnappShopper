@@ -1,0 +1,236 @@
+Here is the API documentation for the `Reviews` class in your PHP application:
+
+---
+
+## Review API Documentation
+
+### Overview
+
+The `Reviews` class handles the creation, retrieval, updating, and validation of product reviews. It allows users to leave reviews for products, including a rating and review text.
+
+---
+
+### Endpoints
+
+#### 1. **POST /reviews/save**
+- **Description**: Save or update a product review for a user.
+- **Method**: `POST`
+- **Request Body** (JSON):
+
+```json
+{
+  "review_id": "optional",
+  "user_id": "required",
+  "product_id": "required",
+  "rating": "required (1 to 5)",
+  "review_text": "optional"
+}
+```
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    {
+      "status": "success",
+      "message": "Review saved successfully"
+    }
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "Validation failed",
+      "errors": ["error_message_1", "error_message_2"]
+    }
+    ```
+
+- **Notes**:
+  - If `review_id` is provided, the review will be updated; otherwise, a new review is created.
+  - Validation errors will return a list of error messages.
+
+---
+
+#### 2. **GET /reviews/product/{product_id}**
+- **Description**: Retrieve all reviews for a specific product.
+- **Method**: `GET`
+- **URL Parameters**:
+  - `product_id`: The ID of the product to fetch reviews for.
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    [
+      {
+        "review_id": 1,
+        "user_id": 101,
+        "product_id": 202,
+        "rating": 5,
+        "review_text": "Excellent product!",
+        "created_at": "2025-01-24T12:00:00Z",
+        "updated_at": "2025-01-24T12:00:00Z"
+      },
+      {
+        "review_id": 2,
+        "user_id": 102,
+        "product_id": 202,
+        "rating": 4,
+        "review_text": "Very good, but could improve.",
+        "created_at": "2025-01-23T10:00:00Z",
+        "updated_at": "2025-01-23T10:00:00Z"
+      }
+    ]
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "No reviews found for the specified product."
+    }
+    ```
+
+- **Notes**:
+  - This endpoint retrieves all reviews for a product.
+
+---
+
+#### 3. **GET /reviews/user/{user_id}**
+- **Description**: Retrieve all reviews left by a specific user.
+- **Method**: `GET`
+- **URL Parameters**:
+  - `user_id`: The ID of the user to fetch reviews for.
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    [
+      {
+        "review_id": 1,
+        "user_id": 101,
+        "product_id": 202,
+        "rating": 5,
+        "review_text": "Excellent product!",
+        "created_at": "2025-01-24T12:00:00Z",
+        "updated_at": "2025-01-24T12:00:00Z"
+      }
+    ]
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "No reviews found for the specified user."
+    }
+    ```
+
+- **Notes**:
+  - This endpoint retrieves all reviews left by a specific user.
+
+---
+
+#### 4. **PUT /reviews/update/{review_id}**
+- **Description**: Update the text and/or rating of an existing review.
+- **Method**: `PUT`
+- **URL Parameters**:
+  - `review_id`: The ID of the review to update.
+
+- **Request Body** (JSON):
+
+```json
+{
+  "rating": "required (1 to 5)",
+  "review_text": "optional"
+}
+```
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    {
+      "status": "success",
+      "message": "Review updated successfully"
+    }
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "Validation failed",
+      "errors": ["error_message_1", "error_message_2"]
+    }
+    ```
+
+- **Notes**:
+  - If either the `rating` or `review_text` is provided, it will update that field. If no changes are made, the review remains unchanged.
+
+---
+
+### Class Methods
+
+#### `saveReview()`
+- **Description**: Saves a review or updates an existing one.
+- **Returns**:
+  - On success: `['status' => 'success', 'message' => 'Review saved successfully']`
+  - On failure: `['status' => 'error', 'message' => 'Validation failed', 'errors' => ['error_message']]`
+
+#### `validate()`
+- **Description**: Validates the review fields (ensures `user_id`, `product_id`, and a valid `rating` are provided).
+- **Returns**: An array of validation errors (if any). If validation is successful, the array will be empty.
+
+#### `findReviewsByProductId($product_id)`
+- **Description**: Retrieves all reviews for a specific product.
+- **Parameters**:
+  - `product_id`: The ID of the product.
+- **Returns**: An array of `Review` objects.
+
+#### `findReviewsByUserId($user_id)`
+- **Description**: Retrieves all reviews left by a specific user.
+- **Parameters**:
+  - `user_id`: The ID of the user.
+- **Returns**: An array of `Review` objects.
+
+#### `updateReview($rating, $review_text)`
+- **Description**: Updates the text and/or rating of an existing review.
+- **Parameters**:
+  - `rating`: The new rating (1-5).
+  - `review_text`: The new review text.
+- **Returns**: The result of calling `saveReview()`.
+
+#### `getUserDetails()`
+- **Description**: Retrieves the user details who left the review.
+- **Returns**: The `User` object for the user who left the review.
+
+#### `getProductDetails()`
+- **Description**: Retrieves the product details being reviewed.
+- **Returns**: The `Product` object for the product being reviewed.
+
+---
+
+### Error Codes
+
+| Error Code | Description                                |
+|------------|--------------------------------------------|
+| `400`      | Bad request, typically due to validation errors. |
+| `404`      | Not found, such as when no reviews are found for the specified product or user. |
+| `500`      | Internal server error, such as database connection failure. |
+
+---
+
+### Validation Errors
+- `"User ID is required."` – If the `user_id` field is empty.
+- `"Product ID is required."` – If the `product_id` field is empty.
+- `"Rating must be between 1 and 5."` – If the `rating` is not between 1 and 5.
+
+---
+
+### Notes
+- **User and Product IDs**: The `user_id` and `product_id` must reference valid entries in their respective tables.
+- **Review Rating**: The `rating` should be an integer between 1 and 5.
+- **Review Text**: The `review_text` is optional but can be provided to give additional context to the rating.

@@ -1,0 +1,209 @@
+## API Documentation for Address Class
+
+### Overview
+This API manages user addresses, allowing functionality such as adding, updating, retrieving, and setting default addresses. It supports multiple addresses per user and provides an easy way to query a user's default address or all their addresses.
+
+### Authentication
+All API endpoints require authentication via a token. The token should be passed in the `Authorization` header as a Bearer token.
+
+---
+
+### 1. **Create or Update Address**
+
+#### Endpoint:
+- `POST /addresses/save`
+
+#### Description:
+Creates a new address or updates an existing one. The address details are validated before saving to the database.
+
+#### Request Body:
+```json
+{
+  "user_id": 1,
+  "address_line1": "123 Main St",
+  "address_line2": "Apt 101",
+  "city": "Cityname",
+  "state": "State",
+  "zip_code": "12345",
+  "country": "Country",
+  "is_default": true
+}
+```
+
+#### Response:
+- Success:
+  ```json
+  {
+    "status": "success",
+    "message": "Address saved successfully"
+  }
+  ```
+
+- Error:
+  ```json
+  {
+    "status": "error",
+    "message": "Validation failed",
+    "errors": [
+      "User ID cannot be empty.",
+      "Address line 1 cannot be empty.",
+      "City cannot be empty.",
+      "Country cannot be empty."
+    ]
+  }
+  ```
+
+---
+
+### 2. **Get All Addresses for a User**
+
+#### Endpoint:
+- `GET /addresses/user/{user_id}`
+
+#### Description:
+Retrieves a list of all addresses associated with a specific user, ordered by creation date.
+
+#### Response:
+```json
+{
+  "addresses": [
+    {
+      "address_id": 1,
+      "user_id": 1,
+      "address_line1": "123 Main St",
+      "address_line2": "Apt 101",
+      "city": "Cityname",
+      "state": "State",
+      "zip_code": "12345",
+      "country": "Country",
+      "is_default": true,
+      "created_at": "2025-01-01T12:00:00"
+    },
+    {
+      "address_id": 2,
+      "user_id": 1,
+      "address_line1": "456 Another St",
+      "address_line2": "",
+      "city": "Othercity",
+      "state": "Otherstate",
+      "zip_code": "67890",
+      "country": "Othercountry",
+      "is_default": false,
+      "created_at": "2025-01-02T12:00:00"
+    }
+  ]
+}
+```
+
+---
+
+### 3. **Get Default Address for a User**
+
+#### Endpoint:
+- `GET /addresses/user/{user_id}/default`
+
+#### Description:
+Retrieves the default address for a specific user.
+
+#### Response:
+```json
+{
+  "address_id": 1,
+  "user_id": 1,
+  "address_line1": "123 Main St",
+  "address_line2": "Apt 101",
+  "city": "Cityname",
+  "state": "State",
+  "zip_code": "12345",
+  "country": "Country",
+  "is_default": true,
+  "created_at": "2025-01-01T12:00:00"
+}
+```
+
+- Error (if no default address is found):
+  ```json
+  {
+    "status": "error",
+    "message": "No default address found for user"
+  }
+  ```
+
+---
+
+### 4. **Set Default Address for a User**
+
+#### Endpoint:
+- `PUT /addresses/user/{user_id}/set_default/{address_id}`
+
+#### Description:
+Sets a specific address as the default address for the user. All other addresses for the user will have `is_default` set to false.
+
+#### Response:
+- Success:
+  ```json
+  {
+    "status": "success",
+    "message": "Default address updated successfully"
+  }
+  ```
+
+- Error:
+  ```json
+  {
+    "status": "error",
+    "message": "Failed to update default address"
+  }
+  ```
+
+---
+
+### 5. **Delete Address**
+
+#### Endpoint:
+- `DELETE /addresses/{address_id}`
+
+#### Description:
+Deletes a specific address by its `address_id`.
+
+#### Response:
+- Success:
+  ```json
+  {
+    "status": "success",
+    "message": "Address deleted successfully"
+  }
+  ```
+
+- Error:
+  ```json
+  {
+    "status": "error",
+    "message": "Address not found"
+  }
+  ```
+
+---
+
+### Helper Functions for Validation
+
+The `validate()` function checks for required fields before saving an address to the database:
+
+- `user_id`: Must not be empty.
+- `address_line1`: Must not be empty.
+- `city`: Must not be empty.
+- `country`: Must not be empty.
+
+---
+
+### Notes
+
+1. **Default Address**: Only one address can be marked as the default address for a user. If a new default address is set, the previous default is automatically unset.
+   
+2. **Address Validation**: The API ensures that all mandatory fields are provided when adding or updating an address, preventing invalid entries.
+
+3. **Address Management**: Users can store multiple addresses and set a preferred default address.
+
+---
+
+This API offers full address management, including adding, updating, and deleting addresses, with functionality to manage the default address for users. The API ensures that data is validated before it is stored in the database, guaranteeing correct and complete address records.

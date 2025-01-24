@@ -1,0 +1,255 @@
+## API Documentation for Users Class
+
+### Overview
+This API handles user registration, login, and management. It supports functionality such as registering a new user, logging in, retrieving all users, and validating user information.
+
+### Authentication
+All API endpoints require authentication via a token. The token should be passed in the `Authorization` header as a Bearer token.
+
+---
+
+### 1. **Register User**
+
+#### Endpoint:
+- `POST /users/register`
+
+#### Description:
+Registers a new user by accepting the user's details, validating them, and storing the information in the database. The password is hashed before storage.
+
+#### Request Body:
+```json
+{
+  "first_name": "John",
+  "last_name": "Doe",
+  "email": "john.doe@example.com",
+  "password": "securePassword123",
+  "phone_number": "123-456-7890"
+}
+```
+
+#### Response:
+- Success:
+  ```json
+  {
+    "status": "success",
+    "message": "User registered successfully"
+  }
+  ```
+
+- Error:
+  ```json
+  {
+    "status": "error",
+    "message": "Validation failed",
+    "errors": [
+      "First name cannot be blank.",
+      "Last name cannot be blank.",
+      "Email must be a valid format.",
+      "Password cannot be blank."
+    ]
+  }
+  ```
+
+---
+
+### 2. **Login User**
+
+#### Endpoint:
+- `POST /users/login`
+
+#### Description:
+Logs in a user by verifying their email and password. If valid, a JWT token is generated and returned.
+
+#### Request Body:
+```json
+{
+  "email": "john.doe@example.com",
+  "password": "securePassword123"
+}
+```
+
+#### Response:
+- Success:
+  ```json
+  {
+    "status": "success",
+    "message": "Login successful",
+    "user": {
+      "user_id": 1,
+      "first_name": "John",
+      "last_name": "Doe",
+      "email": "john.doe@example.com",
+      "phone_number": "123-456-7890",
+      "created_at": "2025-01-01T12:00:00",
+      "updated_at": "2025-01-01T12:00:00",
+      "last_loggedIn": "2025-01-01T12:00:00"
+    },
+    "token": "JWT_Token_Here"
+  }
+  ```
+
+- Error (Invalid Password):
+  ```json
+  {
+    "status": "error",
+    "message": "Invalid password"
+  }
+  ```
+
+- Error (User Not Found):
+  ```json
+  {
+    "status": "error",
+    "message": "User not found"
+  }
+  ```
+
+---
+
+### 3. **Get All Users**
+
+#### Endpoint:
+- `GET /users`
+
+#### Description:
+Retrieves a list of all users.
+
+#### Response:
+```json
+{
+  "users": [
+    {
+      "user_id": 1,
+      "first_name": "John",
+      "last_name": "Doe",
+      "email": "john.doe@example.com",
+      "phone_number": "123-456-7890",
+      "created_at": "2025-01-01T12:00:00",
+      "updated_at": "2025-01-01T12:00:00",
+      "last_loggedIn": "2025-01-01T12:00:00"
+    },
+    {
+      "user_id": 2,
+      "first_name": "Jane",
+      "last_name": "Smith",
+      "email": "jane.smith@example.com",
+      "phone_number": "987-654-3210",
+      "created_at": "2025-01-02T12:00:00",
+      "updated_at": "2025-01-02T12:00:00",
+      "last_loggedIn": "2025-01-02T12:00:00"
+    }
+  ]
+}
+```
+
+---
+
+### 4. **Get User by ID**
+
+#### Endpoint:
+- `GET /users/{user_id}`
+
+#### Description:
+Retrieves a user's details by their `user_id`.
+
+#### Response:
+```json
+{
+  "user_id": 1,
+  "first_name": "John",
+  "last_name": "Doe",
+  "email": "john.doe@example.com",
+  "phone_number": "123-456-7890",
+  "created_at": "2025-01-01T12:00:00",
+  "updated_at": "2025-01-01T12:00:00",
+  "last_loggedIn": "2025-01-01T12:00:00"
+}
+```
+
+---
+
+### 5. **Update User Information**
+
+#### Endpoint:
+- `PUT /users/{user_id}`
+
+#### Description:
+Updates a user's details (such as phone number, first name, last name, etc.).
+
+#### Request Body:
+```json
+{
+  "first_name": "Updated Name",
+  "last_name": "Updated Last Name",
+  "phone_number": "111-222-3333"
+}
+```
+
+#### Response:
+- Success:
+  ```json
+  {
+    "status": "success",
+    "message": "User updated successfully"
+  }
+  ```
+
+- Error (Validation Failed):
+  ```json
+  {
+    "status": "error",
+    "message": "Validation failed",
+    "errors": [
+      "First name cannot be blank.",
+      "Phone number must be valid."
+    ]
+  }
+  ```
+
+---
+
+### 6. **Delete User**
+
+#### Endpoint:
+- `DELETE /users/{user_id}`
+
+#### Description:
+Deletes a user by their `user_id`.
+
+#### Response:
+- Success:
+  ```json
+  {
+    "status": "success",
+    "message": "User deleted successfully"
+  }
+  ```
+
+- Error:
+  ```json
+  {
+    "status": "error",
+    "message": "User not found"
+  }
+  ```
+
+---
+
+### 7. **Helper Functions for Validation**
+
+These helper functions are used for validating user data before performing actions such as registration or updating:
+
+- `is_blank($value)`: Checks if a value is empty or not set.
+- `has_valid_email_format($email)`: Validates if an email address is in the correct format.
+
+---
+
+### Notes
+
+1. **Password Hashing**: All passwords are securely hashed using the `PasswordHash` class before being saved in the database. No plain-text passwords are stored.
+   
+2. **JWT Token**: After successful login, a JWT token is generated and returned to the user. This token must be used for authenticated requests.
+
+---
+
+This API allows you to manage users efficiently, handling the registration, login, retrieval, and deletion of users within your e-commerce system. It ensures secure password handling with hashing and provides comprehensive error handling for validation.

@@ -1,0 +1,214 @@
+Here is the API documentation for the `SubCategory` class in your PHP application:
+
+---
+
+## SubCategory API Documentation
+
+### Overview
+
+The `SubCategory` class handles the management of subcategories under a category. It includes operations to save, update, validate, and retrieve subcategories based on various parameters.
+
+---
+
+### Endpoints
+
+#### 1. **POST /subcategory/save**
+- **Description**: Save a new subcategory or update an existing one.
+- **Method**: `POST`
+- **Request Body** (JSON):
+
+```json
+{
+  "sub_category_id": "optional",
+  "name": "required",
+  "category_id": "required"
+}
+```
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    {
+      "status": "success",
+      "message": "Sub-category saved successfully"
+    }
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "Validation failed",
+      "errors": ["error_message_1", "error_message_2"]
+    }
+    ```
+
+- **Notes**:
+  - If `sub_category_id` is provided, the subcategory record will be updated; otherwise, a new subcategory will be created.
+  - Validation errors will return a list of error messages.
+
+---
+
+#### 2. **GET /subcategory/category/{category_id}**
+- **Description**: Retrieve all subcategories for a specific category.
+- **Method**: `GET`
+- **URL Parameters**:
+  - `category_id`: The ID of the category for which to fetch subcategories.
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    [
+      {
+        "sub_category_id": 1,
+        "name": "SubCategory 1",
+        "category_id": 2,
+        "created_at": "2025-01-24T12:00:00Z",
+        "updated_at": "2025-01-24T12:00:00Z"
+      },
+      {
+        "sub_category_id": 2,
+        "name": "SubCategory 2",
+        "category_id": 2,
+        "created_at": "2025-01-24T12:00:00Z",
+        "updated_at": "2025-01-24T12:00:00Z"
+      }
+    ]
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "No subcategories found for the specified category."
+    }
+    ```
+
+- **Notes**:
+  - This endpoint retrieves all subcategories under a given category.
+
+---
+
+#### 3. **GET /subcategory/{sub_category_id}**
+- **Description**: Retrieve a specific subcategory by its ID.
+- **Method**: `GET`
+- **URL Parameters**:
+  - `sub_category_id`: The ID of the subcategory to fetch.
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    {
+      "sub_category_id": 1,
+      "name": "SubCategory 1",
+      "category_id": 2,
+      "created_at": "2025-01-24T12:00:00Z",
+      "updated_at": "2025-01-24T12:00:00Z"
+    }
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "Subcategory not found."
+    }
+    ```
+
+- **Notes**:
+  - This endpoint retrieves the details of a specific subcategory by its ID.
+
+---
+
+#### 4. **PUT /subcategory/update/{sub_category_id}**
+- **Description**: Update the name of an existing subcategory.
+- **Method**: `PUT`
+- **URL Parameters**:
+  - `sub_category_id`: The ID of the subcategory to update.
+
+- **Request Body** (JSON):
+
+```json
+{
+  "name": "required"
+}
+```
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    {
+      "status": "success",
+      "message": "Sub-category name updated successfully"
+    }
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "Failed to update sub-category name"
+    }
+    ```
+
+- **Notes**:
+  - This endpoint updates the name of the subcategory with the specified ID.
+  - The new name must be provided in the request body.
+
+---
+
+### Class Methods
+
+#### `saveSubCategory()`
+- **Description**: Saves or updates the subcategory data.
+- **Returns**:
+  - On success: `['status' => 'success', 'message' => 'Sub-category saved successfully']`
+  - On failure: `['status' => 'error', 'message' => 'Validation failed', 'errors' => ['error_message']]`
+
+#### `validate()`
+- **Description**: Validates the required fields for the subcategory data.
+- **Returns**: An array of validation errors (if any). If validation is successful, the array will be empty.
+
+#### `findByCategoryId($category_id)`
+- **Description**: Retrieves all subcategories associated with a specific category.
+- **Parameters**:
+  - `category_id`: The ID of the category.
+- **Returns**: An array of `SubCategory` objects.
+
+#### `findSubById($sub_category_id)`
+- **Description**: Retrieves the subcategory record by its ID.
+- **Parameters**:
+  - `sub_category_id`: The ID of the subcategory.
+- **Returns**: A `SubCategory` object if found, or `null` if not found.
+
+#### `updateName($new_name)`
+- **Description**: Updates the name of the subcategory.
+- **Parameters**:
+  - `new_name`: The new name for the subcategory.
+- **Returns**: The result of executing the update query.
+
+---
+
+### Error Codes
+
+| Error Code | Description                                |
+|------------|--------------------------------------------|
+| `400`      | Bad request, typically due to validation errors. |
+| `404`      | Not found, such as when no subcategory information is found for the specified category or subcategory ID. |
+| `500`      | Internal server error, such as database connection failure. |
+
+---
+
+### Validation Errors
+- `"Sub-category name cannot be empty."` – If the `name` field is empty.
+- `"Category ID cannot be empty."` – If the `category_id` field is empty.
+
+---
+
+### Notes
+- **Category ID**: The `category_id` must reference a valid category in the categories table.
+- **Subcategory Name**: The `name` field must not be empty when creating or updating a subcategory.

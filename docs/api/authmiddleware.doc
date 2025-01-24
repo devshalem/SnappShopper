@@ -1,0 +1,71 @@
+## API Documentation for AuthMiddleware Class
+
+### Overview
+The `AuthMiddleware` class provides a middleware to verify the validity of a JWT (JSON Web Token) provided in the `Authorization` header of incoming API requests. It ensures that only authorized users can access protected resources.
+
+### Authentication
+The API requires a valid JWT to be included in the `Authorization` header as a Bearer token for accessing protected routes.
+
+---
+
+### **Verify Token**
+
+#### Endpoint:
+- This is not a direct API endpoint, but a middleware used in other API endpoints to authenticate requests.
+
+#### Description:
+Verifies the JWT token provided in the `Authorization` header. If the token is valid, it allows the request to proceed by returning the associated user data. If the token is invalid or not provided, the request is rejected with a 401 Unauthorized response.
+
+#### Request:
+The request must include the `Authorization` header with the Bearer token.
+
+Example of request headers:
+```http
+Authorization: Bearer <JWT_TOKEN>
+```
+
+#### Response:
+- **Success (Token is valid):**
+    - The `verifyToken` function does not return a response on success; it allows the request to continue, and the authenticated user data is passed on.
+  
+- **Error (Token is invalid or missing):**
+    - Status Code: 401 Unauthorized
+    - Response Body:
+      ```json
+      {
+        "status": "error",
+        "message": "Unauthorized access"
+      }
+      ```
+
+---
+
+### Notes
+
+1. **JWT Token Validation**: The `JWT::validateToken` method is responsible for validating the token. It returns the user data if the token is valid, and `false` if the token is invalid or expired.
+   
+2. **Authorization Header**: The request must include the `Authorization` header, with the token in the form `Bearer <JWT_TOKEN>`. If the token is missing or malformed, a 401 error is returned.
+
+3. **Usage in Protected Routes**: The `verifyToken` method is typically called before accessing sensitive or protected resources. If the token is valid, the request continues; otherwise, it is stopped with an unauthorized response.
+
+---
+
+### Example Usage in a Route
+
+Here’s how the middleware can be used in a route definition:
+
+```php
+// Protect a route with token verification
+$app->get('/protected-data', function () {
+    $userData = AuthMiddleware::verifyToken();
+    
+    // Proceed with protected data if token is valid
+    echo json_encode(['status' => 'success', 'message' => 'Data accessed', 'user' => $userData]);
+});
+```
+
+In the example above, the `verifyToken` method checks if the request has a valid JWT before processing the `/protected-data` route. If the token is valid, the request is allowed to proceed. Otherwise, the middleware will stop the request and return a 401 Unauthorized error.
+
+---
+
+This middleware ensures secure access to protected API routes by verifying the authenticity of the JWT token. It serves as a gatekeeper for resources that require user authentication.

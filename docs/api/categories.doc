@@ -1,0 +1,323 @@
+## API Documentation for Categories Class
+
+### Overview
+The `Categories` class handles the management of categories and subcategories. It includes methods for creating and updating categories, retrieving all categories, finding categories by ID, and retrieving subcategories and parent categories.
+
+---
+
+### **Create or Update a Category**
+
+#### Endpoint:
+- **Method**: `POST` / `PUT`
+- **Path**: `/categories/save`
+
+#### Description:
+Creates a new category or updates an existing one based on the provided data. Returns an error if validation fails.
+
+#### Request Parameters:
+- `category_id` (int, optional) - The ID of the category to update (only required for updates).
+- `name` (string) - The name of the category (max 100 characters).
+- `parent_category_id` (int, optional) - The ID of the parent category for this category (nullable).
+
+#### Example Request:
+```json
+{
+  "category_id": 5,
+  "name": "Electronics",
+  "parent_category_id": null
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "message": "Category saved successfully"
+    }
+    ```
+
+- **Error**:
+    - Status: `400 Bad Request`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Validation failed",
+      "errors": [
+        "Name cannot be blank.",
+        "Invalid parent category ID."
+      ]
+    }
+    ```
+
+---
+
+### **Retrieve All Categories**
+
+#### Endpoint:
+- **Method**: `GET`
+- **Path**: `/categories`
+
+#### Description:
+Retrieves all categories from the database.
+
+#### Request Parameters:
+- None.
+
+#### Example Request:
+```json
+{}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "categories": [
+        {
+          "category_id": 1,
+          "name": "Electronics",
+          "parent_category_id": null,
+          "created_at": "2025-01-01",
+          "updated_at": "2025-01-01"
+        },
+        {
+          "category_id": 2,
+          "name": "Laptops",
+          "parent_category_id": 1,
+          "created_at": "2025-01-02",
+          "updated_at": "2025-01-02"
+        }
+      ]
+    }
+    ```
+
+- **Error**:
+    - Status: `500 Internal Server Error`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Failed to retrieve categories"
+    }
+    ```
+
+---
+
+### **Find Category by ID**
+
+#### Endpoint:
+- **Method**: `GET`
+- **Path**: `/categories/{category_id}`
+
+#### Description:
+Retrieves a category by its unique ID.
+
+#### Request Parameters:
+- `category_id` (int) - The ID of the category to retrieve.
+
+#### Example Request:
+```json
+{
+  "category_id": 1
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "category": {
+        "category_id": 1,
+        "name": "Electronics",
+        "parent_category_id": null,
+        "created_at": "2025-01-01",
+        "updated_at": "2025-01-01"
+      }
+    }
+    ```
+
+- **Error**:
+    - Status: `404 Not Found`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Category not found"
+    }
+    ```
+
+---
+
+### **Find Subcategories of a Category**
+
+#### Endpoint:
+- **Method**: `GET`
+- **Path**: `/categories/{parent_category_id}/subcategories`
+
+#### Description:
+Retrieves all subcategories of a specified parent category.
+
+#### Request Parameters:
+- `parent_category_id` (int) - The ID of the parent category to find subcategories for.
+
+#### Example Request:
+```json
+{
+  "parent_category_id": 1
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "subcategories": [
+        {
+          "category_id": 2,
+          "name": "Laptops",
+          "parent_category_id": 1,
+          "created_at": "2025-01-02",
+          "updated_at": "2025-01-02"
+        },
+        {
+          "category_id": 3,
+          "name": "Smartphones",
+          "parent_category_id": 1,
+          "created_at": "2025-01-03",
+          "updated_at": "2025-01-03"
+        }
+      ]
+    }
+    ```
+
+- **Error**:
+    - Status: `404 Not Found`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "No subcategories found"
+    }
+    ```
+
+---
+
+### **Get Parent Category of a Category**
+
+#### Endpoint:
+- **Method**: `GET`
+- **Path**: `/categories/{category_id}/parent`
+
+#### Description:
+Retrieves the parent category of a specific category.
+
+#### Request Parameters:
+- `category_id` (int) - The ID of the category to retrieve the parent for.
+
+#### Example Request:
+```json
+{
+  "category_id": 2
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "parent_category": {
+        "category_id": 1,
+        "name": "Electronics",
+        "parent_category_id": null,
+        "created_at": "2025-01-01",
+        "updated_at": "2025-01-01"
+      }
+    }
+    ```
+
+- **Error**:
+    - Status: `404 Not Found`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Parent category not found"
+    }
+    ```
+
+---
+
+### **Retrieve All Parent Categories**
+
+#### Endpoint:
+- **Method**: `GET`
+- **Path**: `/categories/parents`
+
+#### Description:
+Retrieves all categories that do not have a parent (i.e., top-level categories).
+
+#### Request Parameters:
+- None.
+
+#### Example Request:
+```json
+{}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "parent_categories": [
+        {
+          "category_id": 1,
+          "name": "Electronics",
+          "parent_category_id": null,
+          "created_at": "2025-01-01",
+          "updated_at": "2025-01-01"
+        },
+        {
+          "category_id": 4,
+          "name": "Clothing",
+          "parent_category_id": null,
+          "created_at": "2025-01-04",
+          "updated_at": "2025-01-04"
+        }
+      ]
+    }
+    ```
+
+- **Error**:
+    - Status: `500 Internal Server Error`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Failed to retrieve parent categories"
+    }
+    ```
+
+---
+
+### Notes:
+- **Validation**: The `name` field cannot be blank and must not exceed 100 characters. If the `parent_category_id` is provided, it must be a valid existing category ID.
+- **Category Relationships**: Categories can have a parent category, creating a hierarchy of categories and subcategories.

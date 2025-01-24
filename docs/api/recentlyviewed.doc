@@ -1,0 +1,207 @@
+Here is the API documentation for the `RecentlyViewedItem` class in your PHP application:
+
+---
+
+## Recently Viewed Item API Documentation
+
+### Overview
+
+The `RecentlyViewedItem` class manages the records of products that users have recently viewed. It provides functionality for saving, retrieving, and deleting these records.
+
+---
+
+### Endpoints
+
+#### 1. **POST /recently_viewed_item/save**
+- **Description**: Save a recently viewed item for a user.
+- **Method**: `POST`
+- **Request Body** (JSON):
+
+```json
+{
+  "view_id": "optional",
+  "user_id": "required",
+  "product_id": "required",
+  "viewed_at": "optional"
+}
+```
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    {
+      "status": "success",
+      "message": "Recently viewed item saved successfully"
+    }
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "Validation failed",
+      "errors": ["error_message_1", "error_message_2"]
+    }
+    ```
+
+- **Notes**:
+  - If `view_id` is provided, the item is updated; otherwise, a new entry is created.
+  - Validation errors will return a list of error messages.
+
+---
+
+#### 2. **GET /recently_viewed_item/user/{user_id}**
+- **Description**: Retrieve the recently viewed items for a specific user, ordered by most recent.
+- **Method**: `GET`
+- **URL Parameters**:
+  - `user_id`: The ID of the user to fetch recently viewed items for.
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    [
+      {
+        "view_id": 1,
+        "user_id": 101,
+        "product_id": 202,
+        "viewed_at": "2025-01-24 14:00:00"
+      },
+      {
+        "view_id": 2,
+        "user_id": 101,
+        "product_id": 203,
+        "viewed_at": "2025-01-23 10:00:00"
+      }
+    ]
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "No recently viewed items found for the specified user."
+    }
+    ```
+
+- **Notes**:
+  - This endpoint returns all recently viewed items for a user, ordered by the most recent view.
+
+---
+
+#### 3. **GET /recently_viewed_item/user/{user_id}/product/{product_id}**
+- **Description**: Retrieve a specific recently viewed item for a user by product ID.
+- **Method**: `GET`
+- **URL Parameters**:
+  - `user_id`: The ID of the user.
+  - `product_id`: The ID of the product.
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    {
+      "view_id": 1,
+      "user_id": 101,
+      "product_id": 202,
+      "viewed_at": "2025-01-24 14:00:00"
+    }
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "No recently viewed item found for the specified user and product."
+    }
+    ```
+
+- **Notes**:
+  - This endpoint retrieves a specific recently viewed item based on both the `user_id` and `product_id`.
+
+---
+
+#### 4. **DELETE /recently_viewed_item/user/{user_id}/product/{product_id}**
+- **Description**: Delete a recently viewed item by user ID and product ID.
+- **Method**: `DELETE`
+- **URL Parameters**:
+  - `user_id`: The ID of the user.
+  - `product_id`: The ID of the product.
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    {
+      "status": "success",
+      "message": "Recently viewed item deleted successfully"
+    }
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "Failed to delete recently viewed item"
+    }
+    ```
+
+- **Notes**:
+  - This endpoint removes the product from the list of recently viewed items for the specified user.
+
+---
+
+### Class Methods
+
+#### `saveRecentlyViewedItem()`
+- **Description**: Save or update a recently viewed item for a user.
+- **Returns**:
+  - On success: `['status' => 'success', 'message' => 'Recently viewed item saved successfully']`
+  - On failure: `['status' => 'error', 'message' => 'Validation failed', 'errors' => ['error_message']]`
+
+#### `validate()`
+- **Description**: Validates the recently viewed item data (checks if user and product IDs are provided).
+- **Returns**: An array of validation errors (if any). If validation is successful, the array will be empty.
+
+#### `findByUserId($user_id)`
+- **Description**: Finds all recently viewed items for a user, ordered by most recent.
+- **Parameters**:
+  - `user_id`: The ID of the user to fetch recently viewed items for.
+- **Returns**: An array of `RecentlyViewedItem` objects.
+
+#### `findByUserAndProduct($user_id, $product_id)`
+- **Description**: Finds a specific recently viewed item for a user by product ID.
+- **Parameters**:
+  - `user_id`: The ID of the user.
+  - `product_id`: The ID of the product.
+- **Returns**: A `RecentlyViewedItem` object if found, otherwise `null`.
+
+#### `deleteByUserAndProduct($user_id, $product_id)`
+- **Description**: Deletes a recently viewed item by user ID and product ID.
+- **Parameters**:
+  - `user_id`: The ID of the user.
+  - `product_id`: The ID of the product.
+- **Returns**: `true` if successful, otherwise `false`.
+
+---
+
+### Error Codes
+
+| Error Code | Description                                |
+|------------|--------------------------------------------|
+| `400`      | Bad request, typically due to validation errors. |
+| `404`      | Not found, such as when no recently viewed item is found for the specified user or product. |
+| `500`      | Internal server error, such as database connection failure. |
+
+---
+
+### Validation Errors
+- `"User ID cannot be empty."` – If the `user_id` field is empty.
+- `"Product ID cannot be empty."` – If the `product_id` field is empty.
+
+---
+
+### Notes
+- **User and Product IDs**: The `user_id` and `product_id` must reference valid entries in their respective tables.
+- **Recently Viewed Items**: This API provides functionality to track and manage items that users have viewed recently, which can be useful for personalized recommendations, tracking user behavior, etc.

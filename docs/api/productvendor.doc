@@ -1,0 +1,241 @@
+Here is the API documentation for the `ProductVendor` class in your PHP application:
+
+---
+
+## Product Vendor API Documentation
+
+### Overview
+
+The `ProductVendor` class manages the relationship between products and vendors in the database, providing functionality for adding, updating, retrieving, and deleting product-vendor relationships.
+
+---
+
+### Endpoints
+
+#### 1. **POST /product_vendor/save**
+- **Description**: Save a product-vendor relationship.
+- **Method**: `POST`
+- **Request Body** (JSON):
+
+```json
+{
+  "product_vendor_id": "optional",
+  "product_id": "required",
+  "vendor_id": "required",
+  "created_at": "optional"
+}
+```
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    {
+      "status": "success",
+      "message": "Product-Vendor relationship saved successfully"
+    }
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "Validation failed",
+      "errors": ["error_message_1", "error_message_2"]
+    }
+    ```
+
+- **Notes**: 
+  - If `product_vendor_id` is provided, the relationship is updated. If not, a new relationship is created.
+  - Validation errors will return a list of error messages.
+
+---
+
+#### 2. **GET /product_vendor/product/{product_id}**
+- **Description**: Retrieve the product-vendor relationship by `product_id`.
+- **Method**: `GET`
+- **URL Parameters**:
+  - `product_id`: The ID of the product to fetch the vendor relationship for.
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    {
+      "product_vendor_id": 1,
+      "product_id": 101,
+      "vendor_id": 202,
+      "created_at": "2025-01-24 14:00:00"
+    }
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "No product-vendor relationship found for the specified product."
+    }
+    ```
+
+- **Notes**: 
+  - This will return the product-vendor relationship for the specified `product_id`.
+
+---
+
+#### 3. **GET /product_vendor/vendor/{vendor_id}**
+- **Description**: Retrieve the product-vendor relationship by `vendor_id`.
+- **Method**: `GET`
+- **URL Parameters**:
+  - `vendor_id`: The ID of the vendor to fetch the product relationship for.
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    {
+      "product_vendor_id": 1,
+      "product_id": 101,
+      "vendor_id": 202,
+      "created_at": "2025-01-24 14:00:00"
+    }
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "No product-vendor relationship found for the specified vendor."
+    }
+    ```
+
+- **Notes**: 
+  - This will return the product-vendor relationship for the specified `vendor_id`.
+
+---
+
+#### 4. **DELETE /product_vendor/{product_vendor_id}**
+- **Description**: Delete a product-vendor relationship by `product_vendor_id`.
+- **Method**: `DELETE`
+- **URL Parameters**:
+  - `product_vendor_id`: The ID of the product-vendor relationship to delete.
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    {
+      "status": "success",
+      "message": "Product-Vendor relationship deleted successfully"
+    }
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "Failed to delete product-vendor relationship"
+    }
+    ```
+
+- **Notes**: 
+  - The product-vendor relationship will be deleted based on the provided `product_vendor_id`.
+  - If the deletion fails, an error message will be returned.
+
+---
+
+#### 5. **PUT /product_vendor/update**
+- **Description**: Update an existing product-vendor relationship.
+- **Method**: `PUT`
+- **Request Body** (JSON):
+
+```json
+{
+  "product_vendor_id": "required",
+  "product_id": "required",
+  "vendor_id": "required",
+  "created_at": "optional"
+}
+```
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    {
+      "status": "success",
+      "message": "Product-Vendor relationship updated successfully"
+    }
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "Validation failed",
+      "errors": ["error_message_1", "error_message_2"]
+    }
+    ```
+
+- **Notes**:
+  - This endpoint will update the product-vendor relationship based on the provided `product_vendor_id`.
+  - Validation errors will return a list of error messages.
+
+---
+
+### Class Methods
+
+#### `saveProductVendor()`
+- **Description**: Save or update the product-vendor relationship in the database.
+- **Returns**: 
+  - On success: `['status' => 'success', 'message' => 'Product-Vendor relationship saved successfully']`
+  - On failure: `['status' => 'error', 'message' => 'Validation failed', 'errors' => ['error_message']]`
+
+#### `validate()`
+- **Description**: Validates the product-vendor data (checks if product and vendor IDs are provided).
+- **Returns**: An array of validation errors (if any). If validation is successful, the array will be empty.
+
+#### `findByProductId($product_id)`
+- **Description**: Finds the product-vendor relationship by `product_id`.
+- **Parameters**:
+  - `product_id`: The ID of the product to find the vendor relationship for.
+- **Returns**: A `ProductVendor` object if found, otherwise `null`.
+
+#### `findByVendorId($vendor_id)`
+- **Description**: Finds the product-vendor relationship by `vendor_id`.
+- **Parameters**:
+  - `vendor_id`: The ID of the vendor to find the product relationship for.
+- **Returns**: A `ProductVendor` object if found, otherwise `null`.
+
+#### `deleteById($product_vendor_id)`
+- **Description**: Deletes a product-vendor relationship by `product_vendor_id`.
+- **Parameters**:
+  - `product_vendor_id`: The ID of the product-vendor relationship to delete.
+- **Returns**: `true` if successful, otherwise `false`.
+
+#### `updateProductVendor()`
+- **Description**: Updates the product-vendor relationship in the database.
+- **Returns**:
+  - On success: `['status' => 'success', 'message' => 'Product-Vendor relationship updated successfully']`
+  - On failure: `['status' => 'error', 'message' => 'Validation failed', 'errors' => ['error_message']]`
+
+---
+
+### Error Codes
+
+| Error Code | Description                                |
+|------------|--------------------------------------------|
+| `400`      | Bad request, typically due to validation errors. |
+| `404`      | Not found, such as when no product-vendor relationship is found for the specified product or vendor. |
+| `500`      | Internal server error, such as database connection failure. |
+
+---
+
+### Validation Errors
+- `"Product ID cannot be empty."` – If the `product_id` field is empty.
+- `"Vendor ID cannot be empty."` – If the `vendor_id` field is empty.
+
+---
+
+### Notes
+- **Product and Vendor IDs**: The `product_id` and `vendor_id` must reference valid entries in their respective tables.
+- **Product-Vendor Relationship**: Each product can be associated with one vendor, and vice versa.

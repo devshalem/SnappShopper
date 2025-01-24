@@ -1,0 +1,204 @@
+## API Documentation for Notification Class
+
+### Overview
+The `Notification` class manages notifications for users in an application. It provides methods to create, retrieve, validate, and update notifications, including marking them as seen.
+
+---
+
+### **Save Notification**
+
+#### Endpoint:
+- **Method**: `POST`
+- **Path**: `/notifications/save`
+
+#### Description:
+Creates a new notification and saves it to the database.
+
+#### Request Parameters:
+- `user_id` (int) - The ID of the user to whom the notification is sent.
+- `message` (string) - The content of the notification.
+- `status` (string, optional) - The status of the notification, default is `Unseen`.
+- `created_at` (string, optional) - The timestamp when the notification was created.
+
+#### Example Request:
+```json
+{
+  "user_id": 101,
+  "message": "You have a new message!",
+  "status": "Unseen",
+  "created_at": "2025-01-24 12:00:00"
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "message": "Notification saved successfully"
+    }
+    ```
+
+- **Error**:
+    - Status: `400 Bad Request`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Validation failed",
+      "errors": [
+        "User ID cannot be empty.",
+        "Message cannot be empty."
+      ]
+    }
+    ```
+
+---
+
+### **Get Notifications by User ID**
+
+#### Endpoint:
+- **Method**: `GET`
+- **Path**: `/notifications/user/{user_id}`
+
+#### Description:
+Retrieves the notifications for a specific user, ordered by the most recent.
+
+#### Request Parameters:
+- `user_id` (int) - The ID of the user for whom the notifications are being fetched.
+
+#### Example Request:
+```json
+{
+  "user_id": 101
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "notifications": [
+        {
+          "notification_id": 1,
+          "user_id": 101,
+          "message": "You have a new message!",
+          "status": "Unseen",
+          "created_at": "2025-01-24 12:00:00"
+        },
+        {
+          "notification_id": 2,
+          "user_id": 101,
+          "message": "Your profile has been updated.",
+          "status": "Seen",
+          "created_at": "2025-01-23 15:00:00"
+        }
+      ]
+    }
+    ```
+
+- **Error**:
+    - Status: `404 Not Found`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "No notifications found for the given user ID"
+    }
+    ```
+
+---
+
+### **Mark Notification as Seen**
+
+#### Endpoint:
+- **Method**: `PUT`
+- **Path**: `/notifications/mark-seen/{notification_id}`
+
+#### Description:
+Marks a specific notification as "Seen".
+
+#### Request Parameters:
+- `notification_id` (int) - The ID of the notification to be marked as seen.
+
+#### Example Request:
+```json
+{
+  "notification_id": 1
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "message": "Notification marked as seen"
+    }
+    ```
+
+- **Error**:
+    - Status: `400 Bad Request`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Failed to mark notification as seen"
+    }
+    ```
+
+---
+
+### **Mark All Notifications as Seen**
+
+#### Endpoint:
+- **Method**: `PUT`
+- **Path**: `/notifications/mark-all-seen/{user_id}`
+
+#### Description:
+Marks all notifications as "Seen" for a specific user.
+
+#### Request Parameters:
+- `user_id` (int) - The ID of the user whose notifications are to be marked as seen.
+
+#### Example Request:
+```json
+{
+  "user_id": 101
+}
+```
+
+#### Response:
+- **Success**:
+    - Status: `200 OK`
+    - Response Body:
+    ```json
+    {
+      "status": "success",
+      "message": "All notifications marked as seen"
+    }
+    ```
+
+- **Error**:
+    - Status: `400 Bad Request`
+    - Response Body:
+    ```json
+    {
+      "status": "error",
+      "message": "Failed to mark notifications as seen"
+    }
+    ```
+
+---
+
+### Notes:
+- **Validation**: The notification requires both a `user_id` and a `message`. If either is missing, an error will be returned.
+- **Status**: Notifications are initially created with a status of `Unseen`. Users can mark them as `Seen` when they view them.
+- **Timestamps**: The `created_at` timestamp is optional and defaults to the current time if not provided.

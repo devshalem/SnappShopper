@@ -1,0 +1,221 @@
+Here is the API documentation for the `Shipping` class in your PHP application:
+
+---
+
+## Shipping API Documentation
+
+### Overview
+
+The `Shipping` class handles the management of shipping information for orders. This includes processing shipping, updating statuses, and retrieving shipping details related to orders.
+
+---
+
+### Endpoints
+
+#### 1. **POST  /shipping/save**
+- **Description**: Save or update shipping information for an order.
+- **Method**: `POST`
+- **Request Body** (JSON):
+
+```json
+{
+  "shipping_id": "optional",
+  "order_id": "required",
+  "address_id": "required",
+  "shipping_date": "optional",
+  "shipping_status": "required (Pending, Shipped, Delivered)",
+  "tracking_number": "optional"
+}
+```
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    {
+      "status": "success",
+      "message": "Shipping processed successfully"
+    }
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "Validation failed",
+      "errors": ["error_message_1", "error_message_2"]
+    }
+    ```
+
+- **Notes**:
+  - If `shipping_id` is provided, the shipping record will be updated; otherwise, a new shipping record will be created.
+  - Validation errors will return a list of error messages.
+
+---
+
+#### 2. **GET /shipping/order/{order_id}**
+- **Description**: Retrieve shipping information for a specific order.
+- **Method**: `GET`
+- **URL Parameters**:
+  - `order_id`: The ID of the order to fetch shipping information for.
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    [
+      {
+        "shipping_id": 1,
+        "order_id": 123,
+        "address_id": 456,
+        "shipping_date": "2025-01-24T12:00:00Z",
+        "shipping_status": "Shipped",
+        "tracking_number": "ABC123456",
+        "created_at": "2025-01-24T12:00:00Z"
+      }
+    ]
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "No shipping information found for the specified order."
+    }
+    ```
+
+- **Notes**:
+  - This endpoint retrieves all shipping records for an order.
+
+---
+
+#### 3. **GET /shipping/{shipping_id}**
+- **Description**: Retrieve shipping information by shipping ID.
+- **Method**: `GET`
+- **URL Parameters**:
+  - `shipping_id`: The ID of the shipping record to fetch.
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    {
+      "shipping_id": 1,
+      "order_id": 123,
+      "address_id": 456,
+      "shipping_date": "2025-01-24T12:00:00Z",
+      "shipping_status": "Shipped",
+      "tracking_number": "ABC123456",
+      "created_at": "2025-01-24T12:00:00Z"
+    }
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "Shipping information not found."
+    }
+    ```
+
+- **Notes**:
+  - This endpoint retrieves shipping details for a specific shipping record by its ID.
+
+---
+
+#### 4. **PUT /shipping/update-status/{shipping_id}**
+- **Description**: Update the shipping status for a specific shipping record.
+- **Method**: `PUT`
+- **URL Parameters**:
+  - `shipping_id`: The ID of the shipping record to update.
+
+- **Request Body** (JSON):
+
+```json
+{
+  "shipping_status": "required (Pending, Shipped, Delivered)"
+}
+```
+
+- **Response**:
+
+  - **Success**:
+    ```json
+    {
+      "status": "success",
+      "message": "Shipping status updated successfully"
+    }
+    ```
+
+  - **Error**:
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid shipping status"
+    }
+    ```
+
+- **Notes**:
+  - The status must be one of the following: `Pending`, `Shipped`, or `Delivered`.
+  - If an invalid status is provided, the request will return an error.
+
+---
+
+### Class Methods
+
+#### `saveShipping()`
+- **Description**: Saves or updates the shipping information for an order.
+- **Returns**:
+  - On success: `['status' => 'success', 'message' => 'Shipping processed successfully']`
+  - On failure: `['status' => 'error', 'message' => 'Validation failed', 'errors' => ['error_message']]`
+
+#### `validate()`
+- **Description**: Validates the required fields for the shipping information.
+- **Returns**: An array of validation errors (if any). If validation is successful, the array will be empty.
+
+#### `findShippingByOrderId($order_id)`
+- **Description**: Retrieves all shipping records associated with a specific order.
+- **Parameters**:
+  - `order_id`: The ID of the order.
+- **Returns**: An array of `Shipping` objects.
+
+#### `findShippingById($shipping_id)`
+- **Description**: Retrieves the shipping record associated with a specific shipping ID.
+- **Parameters**:
+  - `shipping_id`: The ID of the shipping record.
+- **Returns**: A `Shipping` object if found, or `null` if not found.
+
+#### `updateShippingStatus($status)`
+- **Description**: Updates the shipping status of a specific shipping record.
+- **Parameters**:
+  - `status`: The new shipping status. Must be one of `Pending`, `Shipped`, or `Delivered`.
+- **Returns**: The result of calling `saveShipping()`.
+
+#### `getAddressDetails()`
+- **Description**: Retrieves the address information associated with the shipping record.
+- **Returns**: The address details for the shipping record.
+
+---
+
+### Error Codes
+
+| Error Code | Description                                |
+|------------|--------------------------------------------|
+| `400`      | Bad request, typically due to validation errors. |
+| `404`      | Not found, such as when no shipping information is found for the specified order or shipping ID. |
+| `500`      | Internal server error, such as database connection failure. |
+
+---
+
+### Validation Errors
+- `"Order ID is required."` – If the `order_id` field is empty.
+- `"Address ID is required."` – If the `address_id` field is empty.
+- `"Shipping status is required."` – If the `shipping_status` field is empty.
+- `"Shipping status must be one of: Pending, Shipped, Delivered."` – If the `shipping_status` is not one of the valid statuses.
+
+---
+
+### Notes
+- **Order and Address IDs**: The `order_id` and `address_id` must reference valid entries in their respective tables.
+- **Shipping Status**: The `shipping_status` can only be one of `Pending`, `Shipped`, or `Delivered`.
+- **Tracking Number**: The `tracking_number` is optional and can be added if applicable.
